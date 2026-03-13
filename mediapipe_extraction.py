@@ -6,11 +6,14 @@ import cv2
 import os
 import numpy as np
 
-""" Utilisation de MediaPipe pour extraire les gestes et les transformer en vecteurs directement utilisables par un réseau de neurones.
-    Le modèle utilisé est HandLandMarker(stocké dans un fichier handlandmarker.task).
-    Ce modèle détermine 21 points sur l'image d'une main pour bien détecter ses mouvements.
-    Pour chaque vidéo, nous allons donc stocker ces 21 points dans une liste, que nous pourrons ensuite passer à notre réseau de neurones.
-    Ce script sort une vidéo basée sur la vidéo qu'il a reçue en entrée mais avec les points déterminés par mediapipe (inspiré de https://github.com/prashver/hand-landmark-recognition-using-mediapipe/blob/main/video_input/hand_tracking_video.py) """
+""" 
+Utilisation de MediaPipe pour extraire les gestes et les transformer en vecteurs directement utilisables par un réseau de neurones.
+Le modèle utilisé est HandLandMarker(stocké dans un fichier handlandmarker.task).
+Ce modèle détermine 21 points sur l'image d'une main pour bien détecter ses mouvements.
+Pour chaque vidéo, nous allons donc stocker ces 21 points dans une liste, que nous pourrons ensuite passer à notre réseau de neurones.
+Ce script sort une vidéo basée sur la vidéo qu'il a reçue en entrée mais avec les points déterminés par mediapipe (inspiré de https://github.com/prashver/hand-landmark-recognition-using-mediapipe/blob/main/video_input/hand_tracking_video.py) 
+
+"""
 
 model_path = 'hand_landmarker.task'
 base_corpus_path = 'corpus_lsf'
@@ -41,7 +44,7 @@ options_image = HandLandmarkerOptions(
 def traiter_image(image_path, output_lettre_corpus, image_name):
     frame = cv2.imread(image_path)
     if frame is None:
-        print(f" Erreur: Impossible de lire l'image : {image_path}")
+        print(f" Erreur: impossible de lire l'image : {image_path}")
         return
 
     height, width = frame.shape[:2]
@@ -51,43 +54,45 @@ def traiter_image(image_path, output_lettre_corpus, image_name):
     with HandLandmarker.create_from_options(options_image) as landmarker:
         result = landmarker.detect(mp_image)
 
-        if result.hand_landmarks:
-            poignet = result.hand_landmarks[0][0]
-            hand_landmarks = result.hand_landmarks[0]
+        frame_points = []  
 
-            frame_points = []
+        if result.hand_landmarks:
+            hand_landmarks = result.hand_landmarks[0]
+            poignet = hand_landmarks[0]
+
             for lm in hand_landmarks:
                 x_px = int(lm.x * width)
                 y_px = int(lm.y * height)
                 cv2.circle(frame, (x_px, y_px), 5, (0, 255, 0), -1)
                 frame_points.extend([lm.x, lm.y, lm.z])
+        else:
+            print(f" Attention: aucune main détectée dans l'image.")
 
-            # Pour une image, on sauvegarde un tableau de shape (1, 63)
-            final_array = np.array([frame_points])
+        # Toujours assigné, même si aucune main détectée
+        final_array = np.array([frame_points]) if frame_points else np.array([])
 
         debug_path = os.path.join(output_lettre_corpus, f"{image_name}_debug.jpg")
         cv2.imwrite(debug_path, frame)
 
         final_path = os.path.join(output_lettre_corpus, f"{image_name}.npy")
         np.save(final_path, final_array)
-        print(f" Traitement de {final_path} terminé")
+        print(f"  Traitement de {final_path} terminé")
 
 
 def traiter_video(video_path, output_lettre_corpus, video_name):
     cam = cv2.VideoCapture(video_path)
-    if frame is None:
-        print(f" Erreur: Impossible de lire la vidéo : {video_path}")
+    if not cam.isOpened():
+        print(f" Erreur : impossible de lire la vidéo : {video_path}")
         return
-    
+
     width  = int(cam.get(cv2.CAP_PROP_FRAME_WIDTH))
     height = int(cam.get(cv2.CAP_PROP_FRAME_HEIGHT))
     fps    = cam.get(cv2.CAP_PROP_FPS)
 
-	# Création de la vidéo de sortie, sur laquelle on rajoutera les points trouvés par mediapipe
+    # Création de la vidéo de sortie, sur laquelle on rajoutera les points trouvés par mediapipe
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
     name_output = os.path.join(output_lettre_corpus, f"{video_name}_debug.mp4")
     out = cv2.VideoWriter(name_output, fourcc, fps, (width, height))
-
 
     with HandLandmarker.create_from_options(options_video) as landmarker:
         video_data = []
@@ -109,13 +114,12 @@ def traiter_video(video_path, output_lettre_corpus, video_name):
 
                 frame_points = []
 
-
-				# On parcourt les points de la main; hand_landmarks contient différents points qui correspondent chacun à un endroit de la main
+                # On parcourt les points de la main; hand_landmarks contient différents points qui correspondent chacun à un endroit de la main
                 for lm in hand_landmarks:
                     x_px = int(lm.x * width)
                     y_px = int(lm.y * height)
 
-					# On affiche les points trouvés par mediapipe pour vérifier sur la vidéo de sortie
+                    # On affiche les points trouvés par mediapipe pour vérifier sur la vidéo de sortie
                     cv2.circle(frame, (x_px, y_px), 5, (0, 255, 0), -1)
 
                     frame_points.extend([lm.x, lm.y, lm.z])
@@ -146,11 +150,9 @@ for corpus_lettre in os.listdir(base_corpus_path):
         nom_sans_ext = os.path.splitext(fichier)[0]
 
         if extension in VIDEO_EXTENSIONS:
-            print(f"[Vidéo] Traitement de {fichier}...")
             traiter_video(fichier_path, output_lettre_corpus, nom_sans_ext)
 
         elif extension in IMAGE_EXTENSIONS:
-            print(f"[Image] Traitement de {fichier}...")
             traiter_image(fichier_path, output_lettre_corpus, nom_sans_ext)
 
         else:
