@@ -4,10 +4,11 @@ Interface PySide6
 
 import sys
 import cv2
+import os
 import numpy as np
 from PySide6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QStackedWidget,
-    QPushButton, QLabel, QVBoxLayout, QHBoxLayout,
+    QPushButton, QLabel, QVBoxLayout, QHBoxLayout, QDialog, QVBoxLayout,
     QGridLayout, QFrame, QScrollArea, QProgressBar, QSizePolicy
 )
 from PySide6.QtCore import Qt, QTimer, QThread, Signal, QPropertyAnimation, QEasingCurve, QSize
@@ -15,22 +16,24 @@ from PySide6.QtGui import (
     QFont, QPixmap, QImage, QColor, QPalette, QLinearGradient,
     QPainter, QBrush, QPen, QIcon, QFontDatabase
 )
+from PySide6.QtMultimedia import QMediaPlayer
+from PySide6.QtMultimediaWidgets import QVideoWidget
+from PySide6.QtCore import QUrl
 
 #------------------------------------------------------------
 # Style
-
 COLORS = {
-    "bg_dark":       "#0D0F14",
-    "bg_card":       "#161A23",
-    "bg_hover":      "#1E2433",
-    "accent":        "#4FCFB0",   
-    "accent2":       "#7B61FF",   
-    "accent3":       "#FF6B6B",   
-    "text_primary":  "#E8EAF0",
-    "text_secondary":"#8A90A2",
-    "border":        "#252A38",
-    "success":       "#4FCFB0",
-    "warning":       "#FFB347",
+    "bg_dark":       "#EEE8DC",
+    "bg_card":       "#E4DED0",
+    "bg_hover":      "#D6CCBC",
+    "accent":        "#8B2240",
+    "accent2":       "#263660",
+    "accent3":       "#7888B8",
+    "text_primary":  "#432718",
+    "text_secondary":"#907060",
+    "border":        "#C6B8A2",
+    "success":       "#607040",
+    "warning":       "#A07820",
 }
 
 STYLESHEET = f"""
@@ -112,8 +115,121 @@ class Card(QFrame):
         """)
 
 #------------------------------------------------------------
-# Démnstration
+# Interface Principal
 
+class MainInterface(QWidget):
+    def __init__(self):
+        super().__init__()
+
+        main_layout = QVBoxLayout(self)
+        main_layout.setContentsMargins(20,20,20,20)
+        main_layout.setSpacing(20)
+
+        # ----- TITRE GLOBAL -----
+        title = QLabel("Détection et analyse de dactylologie française")
+        title.setAlignment(Qt.AlignCenter)
+        title.setFont(QFont("Segoe UI", 26, QFont.Bold))
+        title.setStyleSheet(f"color: {COLORS['accent']};")
+
+        main_layout.addWidget(title)
+
+        # ----- BARRE DE NAVIGATION -----
+        nav_layout = QHBoxLayout()
+        nav_layout.setSpacing(12)
+
+        self.btn_accueil = QPushButton("Accueil")
+        self.btn_donnees = QPushButton("Données")
+        self.btn_scripts = QPushButton("Scripts")
+        self.btn_demo = QPushButton("Démo")
+
+        buttons = [
+            self.btn_accueil,
+            self.btn_donnees,
+            self.btn_scripts,
+            self.btn_demo
+        ]
+
+        for b in buttons:
+            b.setFixedHeight(36)
+            b.setStyleSheet(f"""
+                QPushButton {{
+                    background-color: {COLORS['bg_card']};
+                    border: 1px solid {COLORS['border']};
+                    border-radius: 8px;
+                }}
+                QPushButton:hover {{
+                    background-color: {COLORS['bg_hover']};
+                }}
+            """)
+            nav_layout.addWidget(b)
+
+        nav_layout.addStretch()
+        main_layout.addLayout(nav_layout)
+
+        # ----- STACKED WIDGET -----
+        self.pages = QStackedWidget()
+
+        self.page_accueil = PageAccueil
+        self.page_donnees = PageDonnées
+        self.page_scripts = PageScripts
+        self.page_demo = PageDemo()
+
+        self.pages.addWidget(self.page_accueil)
+        self.pages.addWidget(self.page_donnees)
+        self.pages.addWidget(self.page_scripts)
+        self.pages.addWidget(self.page_demo)
+
+        main_layout.addWidget(self.pages)
+
+        # ----- CONNEXIONS -----
+        self.btn_accueil.clicked.connect(lambda: self.pages.setCurrentIndex(0))
+        self.btn_donnees.clicked.connect(lambda: self.pages.setCurrentIndex(1))
+        self.btn_scripts.clicked.connect(lambda: self.pages.setCurrentIndex(2))
+        self.btn_demo.clicked.connect(lambda: self.pages.setCurrentIndex(3))
+
+
+#------------------------------------------------------------
+# Barre de navigation
+class NavigationBar(QWidget):
+    page_changed = Signal(int)
+
+    def __init__(self):
+        super().__init__()
+
+        layout = QHBoxLayout(self)
+        layout.setSpacing(12)
+
+        self.buttons = []
+
+        names = ["Accueil", "Données", "Scripts", "Démo"]
+
+        for i, name in enumerate(names):
+            btn = QPushButton(name)
+            btn.setFixedHeight(36)
+
+            btn.setStyleSheet(f"""
+                QPushButton {{
+                    background-color: {COLORS['bg_card']};
+                    border: 1px solid {COLORS['border']};
+                    border-radius: 8px;
+                    padding: 6px 16px;
+                }}
+                QPushButton:hover {{
+                    background-color: {COLORS['bg_hover']};
+                }}
+            """)
+
+            btn.clicked.connect(lambda _, idx=i: self.page_changed.emit(idx))
+
+            layout.addWidget(btn)
+            self.buttons.append(btn)
+
+        layout.addStretch()
+
+
+
+#------------------------------------------------------------
+# Page Démonstration
 class PageDemo(QWidget):
     def __init__(self):
         super().__init__()
@@ -165,6 +281,29 @@ class PageDemo(QWidget):
         self.toggle_btn.clicked.connect(self._toggle_camera)
         left.addWidget(self.toggle_btn)
 
+        # Conseils
+        tips_card = Card()
+        tips_lay = QVBoxLayout(tips_card)
+        tips_lay.setContentsMargins(20, 16, 20, 16)
+        tips_lay.setSpacing(8)
+        tips_title = QLabel("Conseils pour une bonne reconnaissance")
+        tips_title.setFont(QFont("Segoe UI", 11, QFont.Bold))
+        tips_title.setStyleSheet(f"color: {COLORS['accent']};")
+        tips_lay.addWidget(tips_title)
+        tips = [
+            "Placez votre main bien dans le cadre",
+            "Privilégiez un éclairage homogène et un fond neutre de préférence",
+            "Gardez votre main à 30–50 cm de la caméra",
+            "Restez immobile 1–2 secondes pour la prédiction",
+        ]
+        for tip in tips:
+            t = QLabel(tip)
+            t.setFont(QFont("Segoe UI", 10))
+            t.setStyleSheet(f"color: {COLORS['text_secondary']};")
+            tips_lay.addWidget(t)
+
+        left.addWidget(tips_card)
+
         main_lay.addLayout(left)
 
         #Droite : résultat + guide
@@ -204,7 +343,7 @@ class PageDemo(QWidget):
         conf_lbl.setFont(QFont("Segoe UI", 10))
         conf_lbl.setStyleSheet(f"color: {COLORS['text_secondary']};")
         self.conf_bar = QProgressBar()
-        self.conf_bar.setFixedHeight(18)
+        self.conf_bar.setFixedHeight(10)
         self.conf_bar.setRange(0, 100)
         self.conf_bar.setValue(0)
         self.conf_bar.setTextVisible(False)
@@ -227,30 +366,82 @@ class PageDemo(QWidget):
         conf_lay.addWidget(self.conf_pct_lbl)
         right.addWidget(conf_card)
 
-        # Conseils
-        tips_card = Card()
-        tips_lay = QVBoxLayout(tips_card)
-        tips_lay.setContentsMargins(20, 16, 20, 16)
-        tips_lay.setSpacing(8)
-        tips_title = QLabel("Conseils pour une bonne reconnaissance")
-        tips_title.setFont(QFont("Segoe UI", 11, QFont.Bold))
-        tips_title.setStyleSheet(f"color: {COLORS['accent']};")
-        tips_lay.addWidget(tips_title)
-        tips = [
-            "Placez votre main bien dans le cadre",
-            "Éclairage homogène, fond neutre de préférence",
-            "Gardez votre main à 30–50 cm de la caméra",
-            "Restez immobile 1–2 secondes pour la prédiction",
-        ]
-        for tip in tips:
-            t = QLabel(tip)
-            t.setFont(QFont("Segoe UI", 10))
-            t.setStyleSheet(f"color: {COLORS['text_secondary']};")
-            tips_lay.addWidget(t)
+        # bouton affichage des exemples
+        btn_examples_layout = QHBoxLayout()
+        btn_examples_layout.addStretch()
+        self.btn_examples = QPushButton("Exemples de signes")
+        self.btn_examples.setFixedHeight(40)
+        self.btn_examples.setFont(QFont("Segoe UI", 11, QFont.Bold))
+        self.btn_examples.setStyleSheet(f"""
+            QPushButton {{
+                background-color: {COLORS['accent']};
+                color: {COLORS['bg_dark']};
+                border: none;
+                border-radius: 10px;
+            }}
+            QPushButton:hover {{
+                background-color: ##3db99a;
+            }}
+        """)
+        self.btn_examples.clicked.connect(self.show_examples)
+        btn_examples_layout.addWidget(self.btn_examples)
+        right.addLayout(btn_examples_layout)
 
-        right.addWidget(tips_card)
         right.addStretch()
         main_lay.addLayout(right)
+
+    def show_examples(self):
+    # Exemple simple : ouverture d'une petite fenêtre avec des boutons pour chaque vidéo
+        dialog = QDialog(self)
+        dialog.setWindowTitle("Exemples vidéos")
+        dialog.resize(800, 400)
+        layout = QVBoxLayout(dialog)
+
+        # Choix Consonnes / Voyelles
+        type_layout = QHBoxLayout()
+        btn_consonnes = QPushButton("Consonnes")
+        btn_voyelles = QPushButton("Voyelles")
+        type_layout.addWidget(btn_consonnes)
+        type_layout.addWidget(btn_voyelles)
+        layout.addLayout(type_layout)
+
+        # Grid de miniatures (juste des boutons ici)
+        grid = QGridLayout()
+        layout.addLayout(grid)
+
+        # Exemple : listes de vidéos
+        consonnes_videos = ["C1.mp4", "C2.mp4"]
+        voyelles_videos = ["V1.mp4", "V2.mp4"]
+
+        def load_videos(videos):
+            # Efface la grille
+            for i in reversed(range(grid.count())):
+                widget = grid.itemAt(i).widget()
+                if widget:
+                    widget.setParent(None)
+            # Ajoute les boutons
+            for idx, path in enumerate(videos):
+                btn = QPushButton(os.path.basename(path))
+                btn.setFixedSize(120, 90)
+                btn.clicked.connect(lambda checked, p=path: play_video(p))
+                grid.addWidget(btn, idx // 5, idx % 5)
+
+        def play_video(path):
+            # Lecture vidéo simple dans QDialog ou QVideoWidget
+            video_widget = QVideoWidget()
+            player = QMediaPlayer()
+            player.setVideoOutput(video_widget)
+            player.setSource(QUrl.fromLocalFile(path))
+            player.play()
+            # Affiche le lecteur dans le dialogue
+            layout.addWidget(video_widget)
+
+        btn_consonnes.clicked.connect(lambda: load_videos(consonnes_videos))
+        btn_voyelles.clicked.connect(lambda: load_videos(voyelles_videos))
+
+        load_videos(consonnes_videos)  # par défaut
+
+        dialog.exec()
 
     def _toggle_camera(self):
         if not self.camera_active:
@@ -320,17 +511,101 @@ class PageDemo(QWidget):
         self._stop_camera()
         super().closeEvent(event)
 
+#------------------------------------------------------------
+# Pages de description
+class SimplePage(QWidget):
 
+    def __init__(self, text):
+        super().__init__()
+        layout = QVBoxLayout(self)
+        layout.setAlignment(Qt.AlignCenter)
+        label = QLabel(text)
+        label.setFont(QFont("Segoe UI",28,QFont.Bold))
+        layout.addWidget(label)
+
+#------------------------------------------------------------
+# Barre de navigation
+class NavigationBar(QWidget):
+    page_changed = Signal(int)
+
+    def __init__(self):
+        super().__init__()
+
+        layout = QHBoxLayout(self)
+        layout.setSpacing(0)
+        layout.setContentsMargins(0,0,0,0)
+
+        names = ["Accueil", "Données", "Scripts", "Démo"]
+        for i, name in enumerate(names):
+            btn = QPushButton(name)
+            btn.setMinimumHeight(50)
+            btn.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+            btn.clicked.connect(lambda _, idx=i: self.page_changed.emit(idx))
+            btn.setStyleSheet(f"""
+                QPushButton {{
+                    background-color: {COLORS['bg_card']};
+                    border: 1px solid {COLORS['border']};
+                    border-right: none;
+                    font-size: 14px;
+                    font-weight: bold;
+                }}
+                QPushButton:hover {{
+                    background-color: {COLORS['bg_hover']};
+                }}
+            """)
+            layout.addWidget(btn)
+
+        layout.itemAt(layout.count()-1).widget().setStyleSheet(f"""
+            QPushButton {{
+                background-color: {COLORS['bg_card']};
+                border: 1px solid {COLORS['border']};
+                font-size: 14px;
+                font-weight: bold;
+            }}
+            QPushButton:hover {{
+                background-color: {COLORS['bg_hover']};
+            }}
+        """)
+
+#------------------------------------------------------------
+# Interface principal
+class Interface(QWidget):
+    def __init__(self):
+        super().__init__()
+        main_layout = QVBoxLayout(self)
+        title = QLabel("Détection et analyse de dactylologie française")
+        title.setAlignment(Qt.AlignCenter)
+        title.setFont(QFont("Segoe UI",26,QFont.Bold))
+        title.setStyleSheet(f"color:{COLORS['accent']};")
+        main_layout.addWidget(title)
+        # barre de navigation
+        self.navbar = NavigationBar()
+        main_layout.addWidget(self.navbar)
+        # pages sur lesquelles on peut naviguer
+        self.stack = QStackedWidget()
+        self.page_accueil = SimplePage("Accueil")
+        self.page_donnees = SimplePage("Données")
+        self.page_scripts = SimplePage("Scripts")
+        self.page_demo = PageDemo()
+        self.stack.addWidget(self.page_accueil)
+        self.stack.addWidget(self.page_donnees)
+        self.stack.addWidget(self.page_scripts)
+        self.stack.addWidget(self.page_demo)
+        main_layout.addWidget(self.stack)
+        self.navbar.page_changed.connect(self.stack.setCurrentIndex)
+
+#------------------------------------------------------------
+# Main
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     app.setStyleSheet(STYLESHEET)
 
     window = QMainWindow()
-    window.setWindowTitle("Reconnaissance de gestes")
+    window.setWindowTitle("Projet de Détection et analyse de dactylologie française")
     window.resize(1000, 600)
 
-    demo = PageDemo()
-    window.setCentralWidget(demo)
+    interface = Interface()
+    window.setCentralWidget(interface)
     window.show()
 
     sys.exit(app.exec())
