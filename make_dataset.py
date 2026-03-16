@@ -1,8 +1,6 @@
 import numpy as np
 import os
 
-from sklearn.model_selection import train_test_split
-
 from torch.utils.data import Dataset, DataLoader, random_split
 import torch
 
@@ -25,5 +23,15 @@ class LSFDataset(Dataset):
     def __getitem__(self, idx):
         path, label = self.samples[idx]
         data = np.load(path)
+
+        max_len = 80
+
+        if len(data) > max_len:
+            data = data[:max_len]
+
+        elif len(data) < max_len:
+            pad_width = max_len - len(data)
+            padding = np.zeros((pad_width, 63))
+            data = np.vstack((data, padding))
 
         return torch.from_numpy(data).float(), torch.tensor(label)
