@@ -1,8 +1,8 @@
 import numpy as np
 import os
-
 from torch.utils.data import Dataset, DataLoader, random_split
 import torch
+from longueur_sequence import longueur_max
 
 # Création du dataset
 class LSFDataset(Dataset):
@@ -24,13 +24,11 @@ class LSFDataset(Dataset):
         path, label = self.samples[idx]
         data = np.load(path)
 
-        max_len = 80
+        if len(data) > longueur_max:
+            data = data[:longueur_max]
 
-        if len(data) > max_len:
-            data = data[:max_len]
-
-        elif len(data) < max_len:
-            pad_width = max_len - len(data)
+        elif len(data) < longueur_max:
+            pad_width = longueur_max - len(data)
             padding = np.zeros((pad_width, 63))
             data = np.vstack((data, padding))
 
