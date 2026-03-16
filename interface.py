@@ -518,6 +518,28 @@ class PageDemo(QWidget):
         self.cam_label.setPixmap(pixmap)
         self._run_inference(frame)
 
+    def _update_conf_color(self, value: int):
+        """Met à jour la couleur de la barre de conf selon le score"""
+        if value >= 80:
+            color = "#607040"   # vert
+        elif value >= 50:
+            color = "#A07820"   # orange
+        else:
+            color = "#A02121"   # rouge
+        self.conf_bar.setStyleSheet(f"""
+            QProgressBar {{
+                background-color: {COLORS['bg_dark']};
+                border-radius: 9px;
+                border: none;
+            }}
+            QProgressBar::chunk {{
+                background-color: {color};
+                border-radius: 9px;
+            }}
+        """)
+        self.conf_pct_lbl.setStyleSheet(f"color: {color};")
+        self.conf_bar.setValue(value)
+        self.conf_pct_lbl.setText(f"{value} %")
     def _run_inference(self, frame: np.ndarray):
         """
         Pipeline d'inférence ici.
