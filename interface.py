@@ -5,10 +5,12 @@ Interface PySide6
 import sys
 import cv2
 import os
+import requests
+import markdown
 import numpy as np
 from PySide6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QStackedWidget,
-    QPushButton, QLabel, QVBoxLayout, QHBoxLayout, QDialog,
+    QPushButton, QLabel, QVBoxLayout, QHBoxLayout, QDialog, QTextBrowser,
     QGridLayout, QFrame, QScrollArea, QProgressBar, QSizePolicy
 )
 from PySide6.QtCore import Qt, QTimer, QThread, Signal, QSize
@@ -289,7 +291,7 @@ class PageDemo(QWidget):
 
     def show_examples(self):
         dialog = QDialog(self)
-        dialog.setWindowTitle("Exemples vidéos")
+        dialog.setWindowTitle("Exemples de signes")
         dialog.resize(860, 520)
         dialog.setStyleSheet(f"background-color: {COLORS['bg_dark']};")
         layout = QVBoxLayout(dialog)
@@ -558,18 +560,40 @@ class PageDemo(QWidget):
 #------------------------------------------------------------
 # Pages simples
 class SimplePage(QWidget):
+    def __init__(self, title, md_url):
+        super().__init__()
+
+        layout = QVBoxLayout(self)
+        layout.setAlignment(Qt.AlignTop)
+
+        # Titre
+        title_label = QLabel(title)
+        title_label.setFont(QFont("Segoe UI", 28, QFont.Bold))
+        title_label.setAlignment(Qt.AlignCenter)
+        title_label.setStyleSheet(f"color: {COLORS['text_primary']};")
+        layout.addWidget(title_label)
+
+        # Texte Markdown
+        text_widget = QTextBrowser()
+        text_widget.setFont(QFont("Segoe UI", 12))
+        text_widget.setStyleSheet(f"background-color: transparent; color: {COLORS['text_secondary']}; border: none;")
+        layout.addWidget(text_widget)
+        text_widget.setOpenExternalLinks(True)
+
+        # Télécharger et afficher le texte en markdown
+        try:
+            resp = requests.get(md_url)
+            resp.raise_for_status()
+            md_text = resp.text
+            html = markdown.markdown(md_text)
+            text_widget.setHtml(html)
+        except Exception as e:
+            text_widget.setText(f"Impossible de charger {md_url} : {e}")
+
+    # Fond clair
     def paintEvent(self, event):
         p = QPainter(self)
         p.fillRect(self.rect(), QColor(COLORS['bg_dark']))
-
-    def __init__(self, text):
-        super().__init__()
-        layout = QVBoxLayout(self)
-        layout.setAlignment(Qt.AlignCenter)
-        label = QLabel(text)
-        label.setFont(QFont("Segoe UI", 28, QFont.Bold))
-        layout.addWidget(label)
-
 
 #------------------------------------------------------------
 # Barre de navigation
@@ -653,9 +677,9 @@ class Interface(QWidget):
 
         # Pages
         self.stack = QStackedWidget()
-        self.page_accueil = SimplePage("Accueil")
-        self.page_donnees = SimplePage("Données")
-        self.page_scripts = SimplePage("Scripts")
+        self.page_accueil = SimplePage("Accueil", "https://raw.githubusercontent.com/KerenDague/Detection_et_analyse_de_dactylologie_francaise/main/accueil.md")
+        self.page_scripts = SimplePage("Scripts", "https://raw.githubusercontent.com/KerenDague/Detection_et_analyse_de_dactylologie_francaise/main/scripts.md")
+        self.page_donnees = SimplePage("Données", "https://raw.githubusercontent.com/KerenDague/Detection_et_analyse_de_dactylologie_francaise/main/donnees.md")
         self.page_demo = PageDemo()
 
         self.stack.addWidget(self.page_accueil)
@@ -665,8 +689,6 @@ class Interface(QWidget):
 
         main_layout.addWidget(self.stack)
         self.navbar.page_changed.connect(self.stack.setCurrentIndex)
-
-
 #------------------------------------------------------------
 # Main
 if __name__ == "__main__":
