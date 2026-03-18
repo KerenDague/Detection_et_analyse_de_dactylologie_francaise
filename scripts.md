@@ -1,4 +1,4 @@
-**(Lien git du projet)[https://github.com/KerenDague/Detection_et_analyse_de_dactylologie_francaise]** pour accéder aux scripts détaillés ci dessous
+**[Lien git du projet](https://github.com/KerenDague/Detection_et_analyse_de_dactylologie_francaise)** pour accéder aux scripts détaillés ci dessous
 
 ## Détail des scripts :
 
