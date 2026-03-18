@@ -1,3 +1,5 @@
+**Par :** Keren DAGUE, Inès MARTINS et Manon MOULIN
+
 ## Description du projet :
 Nous avons fait le choix d'axer notre sujet sur les retranscrition textuelles issues du mouvement et plus précisémment sur la détection et l'analyse de dactylologie française. La dactylologie française est un ensemble de configurations manuelles relativement simples permettant de transcrire des lettres par le mouvement des mains. Considérée comme l'alphabet de la Langue des Signes Française (LSF) elle est utilisée pour épeller certaines entités nommées ou acronymes. Cependant elle est relativement peu utilisée par les personnes sourdes étant donné que la LSF est une langue gestuelle et contextuelle qui implique peu l'utilisation de l'épellation en dehors d'un contexte d'apprentissage de la langue.  
 
