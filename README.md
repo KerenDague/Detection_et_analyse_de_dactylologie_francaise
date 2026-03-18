@@ -1,8 +1,8 @@
-# Reconnaissance de l'Alphabet LSF
+# Reconnaissance de Dactylologie Française
 
 ## 🎯 Objectif 
 
-Ce projet vise à développer un modèle d'apprentissage automatique capable de reconnaître les lettres de l'alphabet en Langue des Signes Française (LSF) à partir d'images et de vidéos, puis de les traduire en français écrit.
+Ce projet vise à développer un modèle d'apprentissage automatique capable de reconnaître les lettres de la dactylologie françasie (considérée commel'alphabet en Langue des Signes Française (LSF)) à partir d'images et de vidéos, puis de les traduire en français écrit.
 
 ## 🗃️ Données
 
