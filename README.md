@@ -1,4 +1,4 @@
-# Reconnaissance de Dactylologie Française
+# Détection et analyse de Dactylologie Française
 
 ## 🎯 Objectif 
 
