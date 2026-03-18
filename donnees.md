@@ -1,1 +1,10 @@
-Ici le texte pour la partie données
+**[Lien vers le Google Drive du projet](https://drive.google.com/drive/folders/1WCZZWucGLJx2agkZ1Sb95Rp9NF6tlx8i?usp=sharing)** pour accéder aux données décrites ci-dessous.
+
+## Détail des données :
+
+### Vidéos originales :
+Les vidéos originales ont été tournées à notre demande par des personnes que nous connaissons (ou nous-mêmes) qui ont accepté de nous transmettre leurs données dans le cadre de notre projet.
+Les vidéos sont classées en petits sous-corpus qui correspondent aux vidéos sur lesquelles une même personne apparaît, elles sont nommées telles que : *InitialeprénomInitialenom_lettre.mp4* (en cas de doublons comme MM par exemple nous avons ajouté la deuxième lettre du prénom donnant ainis MiM ou encore MaM), de manière à ce que nous puissions nous repérer plus facilement dans nos données. 
+
+### Autorisations de droit à l'image : 
+Dans un soucis de respecter la législation en vigueur concernant l’utilisation de données personnelles, en particulier lorsqu’il s’agit de vidéos où les personnes sont identifiables, nous avons fait le choix de demander aux participants nous ayant envoyé des vidéos de signer une autorisation de droit à l'imae. Cela nous permettant de protéger à la fois less participants et l'équipe du projet, le droit à l’image protègeant toute personne contre l’utilisation, la diffusion ou la reproduction de son image sans son consentement explicite. Il était essentiel pour nous de nous assurer du consentement éclairé des participants ainsi que de leur compréhension des conditions d'utilisation de leurs données (ici analyse seulement). En effet, les vidéos collectées ont été tournées uniquement dans le cadre de notre projet, ainsi elle ne pourront être utilisés que dans ce cadre précis.
