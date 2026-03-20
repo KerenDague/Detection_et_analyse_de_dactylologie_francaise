@@ -53,32 +53,32 @@ app.mount("/gifs", StaticFiles(directory=str(GIFS_DIR)), name="gifs")
 
 # Données
 LETTERS_DB = {
-    "A": {"type": "voyelle",  "description": "Poing fermé, pouce sur le côté.", "difficulty": "facile"},
-    "B": {"type": "consonne", "description": "Main ouverte, doigts joints vers le haut, pouce replié.","difficulty": "facile"},
-    "C": {"type": "consonne", "description": "Main en forme de C, doigts arrondis.","difficulty": "facile"},
-    "D": {"type": "consonne", "description": "Index pointé, autres doigts et pouce formant un cercle.", "difficulty": "moyen"},
-    "E": {"type": "voyelle",  "description": "Doigts repliés sur la paume, pouce sous les doigts.","difficulty": "moyen"},
-    "F": {"type": "consonne", "description": "Pouce et index formant un cercle, autres doigts écartés.","difficulty": "moyen"},
-    "G": {"type": "consonne", "description": "Index et pouce pointés horizontalement.", "difficulty": "moyen"},
-    "H": {"type": "consonne", "description": "Index et majeur pointés horizontalement.","difficulty": "moyen"},
-    "I": {"type": "voyelle",  "description": "Auriculaire levé, autres doigts repliés.", "difficulty": "facile"},
-    "J": {"type": "consonne", "description": "Auriculaire levé avec mouvement en J.","difficulty": "difficile"},
-    "K": {"type": "consonne", "description": "Index et majeur en V, pouce entre les deux.","difficulty": "difficile"},
-    "L": {"type": "consonne", "description": "Index levé, pouce écarté formant un L.","difficulty": "facile"},
-    "M": {"type": "consonne", "description": "Trois doigts repliés sur le pouce.", "difficulty": "moyen"},
-    "N": {"type": "consonne", "description": "Deux doigts repliés sur le pouce.", "difficulty": "moyen"},
-    "O": {"type": "voyelle",  "description": "Tous les doigts forment un cercle avec le pouce.", "difficulty": "facile"},
-    "P": {"type": "consonne", "description": "Comme K mais orienté vers le bas.", "difficulty": "difficile"},
-    "Q": {"type": "consonne", "description": "Comme G mais vers le bas.", "difficulty": "difficile"},
-    "R": {"type": "consonne", "description": "Index et majeur croisés.",  "difficulty": "moyen"},
-    "S": {"type": "consonne", "description": "Poing fermé, pouce sur les doigts.","difficulty": "facile"},
-    "T": {"type": "consonne", "description": "Pouce entre index et majeur repliés.","difficulty": "moyen"},
-    "U": {"type": "voyelle",  "description": "Index et majeur joints et levés.","difficulty": "facile"},
-    "V": {"type": "consonne", "description": "Index et majeur en V.","difficulty": "facile"},
-    "W": {"type": "consonne", "description": "Index, majeur et annulaire en W.","difficulty": "moyen"},
-    "X": {"type": "consonne", "description": "Index recourbé en crochet.", "difficulty": "moyen"},
-    "Y": {"type": "consonne", "description": "Pouce et auriculaire écartés.","difficulty": "facile"},
-    "Z": {"type": "consonne", "description": "Index traçant un Z dans l'air.","difficulty": "difficile"},
+    "A": {"type": "voyelle",  "description": "Poing fermé, pouce sur le côté.", "difficulté": "facile"},
+    "B": {"type": "consonne", "description": "Main ouverte, doigts joints vers le haut, pouce replié.","difficulté": "facile"},
+    "C": {"type": "consonne", "description": "Main en forme de C, doigts arrondis.","difficulté": "facile"},
+    "D": {"type": "consonne", "description": "Index pointé, autres doigts et pouce formant un cercle.", "difficulté": "moyen"},
+    "E": {"type": "voyelle",  "description": "Doigts repliés sur la paume, pouce sous les doigts.","difficulté": "moyen"},
+    "F": {"type": "consonne", "description": "Pouce et index formant un cercle, autres doigts écartés.","difficulté": "moyen"},
+    "G": {"type": "consonne", "description": "Index et pouce pointés horizontalement.", "difficulté": "moyen"},
+    "H": {"type": "consonne", "description": "Index et majeur pointés horizontalement.","difficulté": "moyen"},
+    "I": {"type": "voyelle",  "description": "Auriculaire levé, autres doigts repliés.", "difficulté": "facile"},
+    "J": {"type": "consonne", "description": "Auriculaire levé avec mouvement en J.","difficulté": "difficile"},
+    "K": {"type": "consonne", "description": "Index et majeur en V, pouce entre les deux.","difficulté": "difficile"},
+    "L": {"type": "consonne", "description": "Index levé, pouce écarté formant un L.","difficulté": "facile"},
+    "M": {"type": "consonne", "description": "Trois doigts repliés sur le pouce.", "difficulté": "moyen"},
+    "N": {"type": "consonne", "description": "Deux doigts repliés sur le pouce.", "difficulté": "moyen"},
+    "O": {"type": "voyelle",  "description": "Tous les doigts forment un cercle avec le pouce.", "difficulté": "facile"},
+    "P": {"type": "consonne", "description": "Comme K mais orienté vers le bas.", "difficulté": "difficile"},
+    "Q": {"type": "consonne", "description": "Comme G mais vers le bas.", "difficulté": "difficile"},
+    "R": {"type": "consonne", "description": "Index et majeur croisés.",  "difficulté": "moyen"},
+    "S": {"type": "consonne", "description": "Poing fermé, pouce sur les doigts.","difficulté": "facile"},
+    "T": {"type": "consonne", "description": "Pouce entre index et majeur repliés.","difficulté": "moyen"},
+    "U": {"type": "voyelle",  "description": "Index et majeur joints et levés.","difficulté": "facile"},
+    "V": {"type": "consonne", "description": "Index et majeur en V.","difficulté": "facile"},
+    "W": {"type": "consonne", "description": "Index, majeur et annulaire en W.","difficulté": "moyen"},
+    "X": {"type": "consonne", "description": "Index recourbé en crochet.", "difficulté": "moyen"},
+    "Y": {"type": "voyelle", "description": "Pouce et auriculaire écartés.","difficulté": "facile"},
+    "Z": {"type": "consonne", "description": "Index traçant un Z dans l'air.","difficulté": "difficile"},
 }
 
 session_stats = {
@@ -185,7 +185,7 @@ def status():
     )
 
 
-@app.get("/letters", summary="Liste des lettres reconnues")
+@app.get("/lettders", summary="Liste des lettres reconnues")
 def get_letters(type: Optional[str] = None):
     """
     Retourne toutes les lettres avec leurs métadonnées.
@@ -195,11 +195,10 @@ def get_letters(type: Optional[str] = None):
     for letter, info in LETTERS_DB.items():
         if type and info["type"] != type:
             continue
-        gif_path = GIFS_DIR / f"{letter}.gif"
         result.append({
             "letter": letter,
             **info,
-            "gif_url": f"/gifs/{letter}.gif" if gif_path.exists() else None,
+            "gif_url": f"https://raw.githubusercontent.com/KerenDague/Detection_et_analyse_de_dactylologie_francaise/main/GIF/{letter}.gif",
         })
     return {"count": len(result), "letters": result}
 
