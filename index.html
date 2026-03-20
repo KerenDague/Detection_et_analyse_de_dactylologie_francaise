@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Dactylologie française</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg:        #EEE8DC;
+  --card:      #E4DED0;
+  --hover:     #D6CCBC;
+  --accent:    #8B2240;
+  --accent2:   #263660;
+  --accent3:   #7888B8;
+  --text:      #432718;
+  --muted:     #907060;
+  --border:    #C6B8A2;
+  --success:   #607040;
+  --warning:   #A07820;
+  --danger:    #A02121;
+  --api:       8000;
+  --api-base:  http://localhost:8000;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;display:flex;flex-direction:column}
+
+/* ── Header ── */
+header{padding:24px 40px 0;text-align:center}
+header h1{font-family:'Playfair Display',serif;font-size:clamp(1.3rem,2.5vw,1.9rem);color:var(--accent);letter-spacing:-.5px}
+.api-badge{display:inline-flex;align-items:center;gap:6px;margin-top:8px;font-size:11px;color:var(--muted);font-weight:500;letter-spacing:.4px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--border);flex-shrink:0;transition:background .3s}
+.dot.ok{background:var(--success)}
+.dot.err{background:var(--danger)}
+
+/* ── Nav ── */
+nav{display:flex;border:1px solid var(--border);margin:14px 0 0}
+nav button{flex:1;height:48px;background:var(--card);border:none;border-right:1px solid var(--border);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:var(--text);cursor:pointer;transition:background .15s}
+nav button:last-child{border-right:none}
+nav button:hover{background:var(--hover)}
+nav button.active{background:var(--accent);color:var(--bg)}
+
+/* ── Pages ── */
+main{flex:1;display:flex;flex-direction:column}
+.page{display:none;flex:1;padding:32px 40px;animation:fadein .2s ease}
+.page.active{display:block}
+@keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── Simple pages ── */
+.simple-page h2{font-family:'Playfair Display',serif;font-size:1.8rem;text-align:center;margin-bottom:24px}
+.md-box{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:28px 32px;color:var(--muted);font-size:14px;line-height:1.8;max-width:800px;margin:0 auto}
+.md-box h1,.md-box h2,.md-box h3{font-family:'Playfair Display',serif;color:var(--text);margin:1em 0 .4em}
+.md-box p{margin-bottom:.9em}
+.md-box ul{padding-left:1.4em;margin-bottom:.9em}
+.md-box a{color:var(--accent)}
+.md-box code{background:var(--hover);padding:2px 6px;border-radius:4px;font-size:12px}
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;margin-right:8px;vertical-align:middle}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── Demo page ── */
+#page-demo.active{display:flex;gap:20px;padding:24px 28px;align-items:flex-start}
+.demo-left{flex:0 0 480px;display:flex;flex-direction:column;gap:14px}
+.demo-right{flex:0 0 220px;display:flex;flex-direction:column;gap:14px}
+.demo-signs{flex:1;display:flex;flex-direction:column;gap:12px;min-width:0}
+
+.col-title{font-family:'Playfair Display',serif;font-size:1.15rem;color:var(--text)}
+
+/* Camera */
+#cam-wrap{width:480px;height:360px;background:var(--card);border:2px solid var(--border);border-radius:12px;overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center}
+#cam-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;transform:scaleX(-1)}
+.cam-placeholder{display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--muted);font-size:13px;z-index:1}
+.cam-icon{font-size:2.6rem}
+/* canvas overlay for inference */
+#cam-canvas{display:none}
+
+/* Buttons */
+.btn{height:42px;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s;padding:0 20px}
+.btn-accent{background:var(--accent);color:var(--bg)}
+.btn-accent:hover{background:#a02850}
+.btn-stop{background:var(--accent3);color:#fff}
+.btn-stop:hover{background:#e05555}
+.btn-ghost{background:var(--card);border:1px solid var(--border);color:var(--text)}
+.btn-ghost:hover{background:var(--hover)}
+
+/* Card */
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 22px}
+.card-title{font-weight:700;font-size:12px;letter-spacing:.5px;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.tip{font-size:13px;color:var(--muted);margin-bottom:4px;padding-left:12px;position:relative}
+.tip::before{content:"–";position:absolute;left:0;color:var(--border)}
+
+/* Prediction */
+.pred-card{background:var(--card);border:1px solid var(--border);border-radius:12px;height:190px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative}
+#pred-letter{font-family:'Playfair Display',serif;font-size:96px;font-weight:900;color:var(--accent);line-height:1;transition:all .2s}
+#pred-letter.pulse{animation:pulse .3s ease}
+@keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.08)}100%{transform:scale(1)}}
+#pred-info{font-size:12px;color:var(--muted);margin-top:2px}
+#pred-type{position:absolute;top:14px;right:16px;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:var(--hover);color:var(--muted)}
+
+/* Confidence */
+.conf-track{width:100%;height:8px;background:var(--bg);border-radius:9px;overflow:hidden;margin:6px 0 4px}
+#conf-fill{height:100%;width:0%;border-radius:9px;transition:width .3s,background .3s;background:var(--accent)}
+#conf-pct{font-size:12px;color:var(--accent);font-weight:600}
+
+/* Top-3 */
+.top3-row{display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid var(--border)}
+.top3-row:last-child{border-bottom:none}
+.top3-letter{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--text);width:24px}
+.top3-bar-wrap{flex:1;height:5px;background:var(--bg);border-radius:3px;overflow:hidden}
+.top3-bar{height:100%;border-radius:3px;background:var(--accent);transition:width .3s}
+.top3-pct{font-size:11px;color:var(--muted);width:36px;text-align:right}
+
+/* Stats row */
+.stat-grid{display:flex;gap:12px;flex-wrap:wrap}
+.stat-box{flex:1;min-width:100px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;text-align:center}
+.stat-val{font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--accent);line-height:1}
+.stat-lbl{font-size:11px;color:var(--muted);margin-top:3px}
+
+/* processing time */
+#proc-time{font-size:11px;color:var(--border);text-align:right;margin-top:4px}
+
+/* ── API page ── */
+#page-api.active{display:block}
+.api-section{max-width:840px;margin:0 auto}
+.endpoint-card{background:var(--card);border:1px solid var(--border);border-radius:10px;margin-bottom:14px;overflow:hidden}
+.endpoint-header{display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;user-select:none}
+.method{font-size:11px;font-weight:700;padding:3px 9px;border-radius:4px;letter-spacing:.6px}
+.method.get{background:#d4eedf;color:#2d6b43}
+.method.post{background:#d4e3f5;color:#1a4a7a}
+.method.delete{background:#f5d4d4;color:#7a1a1a}
+.endpoint-path{font-family:'DM Mono',monospace,sans-serif;font-size:13px;font-weight:600;color:var(--text)}
+.endpoint-desc{font-size:12px;color:var(--muted);margin-left:auto}
+.endpoint-body{display:none;padding:0 18px 16px;border-top:1px solid var(--border)}
+.endpoint-body.open{display:block}
+.try-btn{margin-top:10px;height:34px;font-size:12px}
+.response-box{margin-top:10px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px 14px;font-size:12px;font-family:'DM Mono',monospace,sans-serif;color:var(--muted);white-space:pre-wrap;max-height:220px;overflow-y:auto;line-height:1.5}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Panneau signes latéral (toujours visible dans la démo) */
+.signs-panel{background:var(--card);border:1px solid var(--border);border-radius:12px;display:flex;flex-direction:column;overflow:hidden;height:calc(100vh - 160px);min-height:500px}
+.signs-panel-hd{padding:12px 14px;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:8px;flex-shrink:0}
+.signs-panel-title{font-family:'Playfair Display',serif;font-size:1rem;color:var(--text)}
+.signs-filter{display:flex;gap:6px}
+.sfbtn{flex:1;height:28px;border:1px solid var(--border);border-radius:6px;background:var(--bg);font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;color:var(--muted);cursor:pointer;transition:background .15s}
+.sfbtn.active{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+.signs-scroll{flex:1;overflow-y:auto;padding:10px}
+.signs-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.sign-thumb{background:var(--bg);border:2px solid var(--border);border-radius:8px;overflow:hidden;cursor:pointer;transition:border-color .15s,transform .1s}
+.sign-thumb:hover{border-color:var(--accent);transform:scale(1.02)}
+.sign-thumb.active{border-color:var(--accent);box-shadow:0 0 0 3px rgba(139,34,64,.2)}
+.st-gif{width:100%;aspect-ratio:4/3;background:var(--hover);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.st-gif img{width:100%;height:100%;object-fit:contain}
+.st-ph{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;color:var(--accent)}
+.st-label{padding:4px 6px;font-size:11px;font-weight:600;color:var(--text);text-align:center}
+
+/* Carte signe actif (GIF agrandi + description) */
+.active-sign-card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;display:none}
+.active-sign-card.show{display:flex;flex-direction:column}
+.asc-gif{width:100%;aspect-ratio:4/3;background:var(--hover);display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
+.asc-gif img{width:100%;height:100%;object-fit:contain}
+.asc-gif-ph{font-family:'Playfair Display',serif;font-size:5rem;font-weight:700;color:var(--accent)}
+.asc-letter-badge{position:absolute;top:8px;left:10px;font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;color:var(--bg);background:var(--accent);padding:2px 10px;border-radius:20px}
+.asc-info{padding:12px 14px}
+.asc-title{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--accent)}
+.asc-desc{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.55}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Détection et analyse de dactylologie française</h1>
+  <div class="api-badge">
+    <span class="dot" id="api-dot"></span>
+    <span id="api-status-text">Connexion à l'API…</span>
+  </div>
+</header>
+
+<nav>
+  <button class="active" onclick="showPage('accueil',this)">Accueil</button>
+  <button onclick="showPage('donnees',this)">Données</button>
+  <button onclick="showPage('scripts',this)">Scripts</button>
+  <button onclick="showPage('demo',this)">Démo</button>
+  <button onclick="showPage('api',this)">API REST</button>
+</nav>
+
+<main>
+
+<!-- ── Accueil ── -->
+<div id="page-accueil" class="page simple-page active">
+  <h2>Accueil</h2>
+  <div class="md-box" id="md-accueil"><span class="spinner"></span>Chargement…</div>
+</div>
+
+<!-- ── Données ── -->
+<div id="page-donnees" class="page simple-page">
+  <h2>Données</h2>
+  <div class="md-box" id="md-donnees"><span class="spinner"></span>Chargement…</div>
+</div>
+
+<!-- ── Scripts ── -->
+<div id="page-scripts" class="page simple-page">
+  <h2>Scripts</h2>
+  <div class="md-box" id="md-scripts"><span class="spinner"></span>Chargement…</div>
+</div>
+
+<!-- ── Démo ── -->
+<div id="page-demo" class="page">
+
+  <!-- Colonne gauche : caméra + stats -->
+  <div class="demo-left">
+    <p class="col-title">Flux Caméra en Direct</p>
+    <div id="cam-wrap">
+      <div class="cam-placeholder" id="cam-ph">
+        <span class="cam-icon">📷</span>
+        <span>Caméra inactive</span>
+        <span style="font-size:11px">Cliquez sur Démarrer</span>
+      </div>
+      <video id="cam-video" autoplay playsinline></video>
+      <canvas id="cam-canvas"></canvas>
+    </div>
+    <button class="btn btn-accent" id="cam-btn" onclick="toggleCamera()">▶&nbsp; Démarrer la caméra</button>
+    <div class="card">
+      <div class="card-title">Conseils</div>
+      <p class="tip">Placez votre main bien dans le cadre</p>
+      <p class="tip">Éclairage homogène, fond neutre de préférence</p>
+      <p class="tip">Gardez votre main à 30–50 cm de la caméra</p>
+      <p class="tip">Restez immobile 1–2 secondes pour la prédiction</p>
+    </div>
+    <div class="card">
+      <div class="card-title">Session</div>
+      <div class="stat-grid">
+        <div class="stat-box"><div class="stat-val" id="st-total">0</div><div class="stat-lbl">Prédictions</div></div>
+        <div class="stat-box"><div class="stat-val" id="st-rate">–</div><div class="stat-lbl">Haute conf. %</div></div>
+        <div class="stat-box"><div class="stat-val" id="st-ppm">–</div><div class="stat-lbl">Pred/min</div></div>
+      </div>
+      <button class="btn btn-ghost" style="margin-top:10px;height:32px;font-size:12px" onclick="resetStats()">Réinitialiser les stats</button>
+    </div>
+  </div>
+
+  <!-- Colonne centre : prédiction -->
+  <div class="demo-right">
+    <p class="col-title">Prédiction</p>
+    <div class="pred-card">
+      <span id="pred-type">–</span>
+      <div id="pred-letter">?</div>
+      <div id="pred-info">En attente…</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Confiance</div>
+      <div class="conf-track"><div id="conf-fill"></div></div>
+      <div id="conf-pct">0 %</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Top 3</div>
+      <div id="top3-list">
+        <div class="top3-row"><span class="top3-letter">–</span><div class="top3-bar-wrap"><div class="top3-bar" style="width:0%"></div></div><span class="top3-pct">–</span></div>
+        <div class="top3-row"><span class="top3-letter">–</span><div class="top3-bar-wrap"><div class="top3-bar" style="width:0%"></div></div><span class="top3-pct">–</span></div>
+        <div class="top3-row"><span class="top3-letter">–</span><div class="top3-bar-wrap"><div class="top3-bar" style="width:0%"></div></div><span class="top3-pct">–</span></div>
+      </div>
+      <div id="proc-time"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Description du signe prédit</div>
+      <div id="letter-desc" style="font-size:13px;color:var(--muted);line-height:1.65">–</div>
+    </div>
+  </div>
+
+  <!-- Colonne droite : signes de référence -->
+  <div class="demo-signs">
+    <p class="col-title">Signes de référence</p>
+
+    <!-- Carte GIF agrandi du signe sélectionné -->
+    <div class="active-sign-card" id="active-sign-card">
+      <div class="asc-gif" id="asc-gif">
+        <span class="asc-gif-ph" id="asc-ph"></span>
+        <span class="asc-letter-badge" id="asc-badge"></span>
+      </div>
+      <div class="asc-info">
+        <div class="asc-title" id="asc-title"></div>
+        <div class="asc-desc" id="asc-desc"></div>
+      </div>
+    </div>
+
+    <!-- Grille des lettres -->
+    <div class="signs-panel">
+      <div class="signs-panel-hd">
+        <div class="signs-panel-title">Choisissez un signe à reproduire</div>
+        <div class="signs-filter">
+          <button class="sfbtn active" onclick="filterSigns('all',this)">Toutes</button>
+          <button class="sfbtn" onclick="filterSigns('voyelle',this)">Voyelles</button>
+          <button class="sfbtn" onclick="filterSigns('consonne',this)">Consonnes</button>
+        </div>
+      </div>
+      <div class="signs-scroll">
+        <div class="signs-grid" id="signs-grid">
+          <div style="grid-column:1/-1;text-align:center;color:var(--muted);font-size:12px;padding:20px">
+            <span class="spinner"></span> Chargement…
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div><!-- /page-demo -->
+
+<!-- ── API REST ── -->
+<div id="page-api" class="page">
+  <div class="api-section">
+    <h2 style="font-family:'Playfair Display',serif;font-size:1.8rem;margin-bottom:6px">Documentation API</h2>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:24px">Base URL : <code style="background:var(--card);padding:2px 7px;border-radius:4px;font-size:12px">http://localhost:8000</code></p>
+
+    <!-- GET / -->
+    <div class="endpoint-card">
+      <div class="endpoint-header" onclick="toggleEndpoint(this)">
+        <span class="method get">GET</span>
+        <span class="endpoint-path">/</span>
+        <span class="endpoint-desc">Statut de l'API</span>
+      </div>
+      <div class="endpoint-body">
+        <p style="font-size:13px;color:var(--muted)">Vérifie la disponibilité du serveur et retourne ses métadonnées (version, uptime, nombre de lettres).</p>
+        <button class="btn btn-accent try-btn" onclick="tryEndpoint('GET','/')">Tester →</button>
+        <div class="response-box" id="resp-get-root" style="display:none"></div>
+      </div>
+    </div>
+
+    <!-- GET /letters -->
+    <div class="endpoint-card">
+      <div class="endpoint-header" onclick="toggleEndpoint(this)">
+        <span class="method get">GET</span>
+        <span class="endpoint-path">/letters</span>
+        <span class="endpoint-desc">Liste des lettres supportées</span>
+      </div>
+      <div class="endpoint-body">
+        <p style="font-size:13px;color:var(--muted)">Retourne toutes les lettres de l'alphabet dactylologique avec leurs métadonnées.<br>Paramètre optionnel : <code>?type=voyelle</code> ou <code>?type=consonne</code></p>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <button class="btn btn-accent try-btn" onclick="tryEndpoint('GET','/letters')">Toutes →</button>
+          <button class="btn btn-ghost try-btn" onclick="tryEndpoint('GET','/letters?type=voyelle')">Voyelles →</button>
+          <button class="btn btn-ghost try-btn" onclick="tryEndpoint('GET','/letters?type=consonne')">Consonnes →</button>
+        </div>
+        <div class="response-box" id="resp-get-letters" style="display:none"></div>
+      </div>
+    </div>
+
+    <!-- GET /letters/{letter} -->
+    <div class="endpoint-card">
+      <div class="endpoint-header" onclick="toggleEndpoint(this)">
+        <span class="method get">GET</span>
+        <span class="endpoint-path">/letters/{letter}</span>
+        <span class="endpoint-desc">Détails d'une lettre</span>
+      </div>
+      <div class="endpoint-body">
+        <p style="font-size:13px;color:var(--muted)">Retourne les informations détaillées pour une lettre donnée.</p>
+        <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
+          <input id="letter-input" type="text" maxlength="1" value="A" style="width:44px;height:34px;text-align:center;border:1px solid var(--border);border-radius:6px;font-size:16px;font-weight:700;background:var(--bg);color:var(--text);text-transform:uppercase"/>
+          <button class="btn btn-accent try-btn" onclick="tryEndpoint('GET','/letters/'+document.getElementById('letter-input').value.toUpperCase())">Chercher →</button>
+        </div>
+        <div class="response-box" id="resp-get-letter" style="display:none"></div>
+      </div>
+    </div>
+
+    <!-- POST /predict -->
+    <div class="endpoint-card">
+      <div class="endpoint-header" onclick="toggleEndpoint(this)">
+        <span class="method post">POST</span>
+        <span class="endpoint-path">/predict</span>
+        <span class="endpoint-desc">Prédire une lettre depuis une image</span>
+      </div>
+      <div class="endpoint-body">
+        <p style="font-size:13px;color:var(--muted)">Envoie une image encodée en base64. Retourne la lettre détectée, la confiance et le top-3.</p>
+        <p style="font-size:12px;color:var(--muted);margin-top:6px">Corps JSON : <code>{"image": "&lt;base64&gt;", "format": "jpeg"}</code></p>
+        <button class="btn btn-accent try-btn" onclick="tryCapturePredict()">Capturer depuis la caméra →</button>
+        <div class="response-box" id="resp-post-predict" style="display:none"></div>
+      </div>
+    </div>
+
+    <!-- GET /stats -->
+    <div class="endpoint-card">
+      <div class="endpoint-header" onclick="toggleEndpoint(this)">
+        <span class="method get">GET</span>
+        <span class="endpoint-path">/stats</span>
+        <span class="endpoint-desc">Statistiques de session</span>
+      </div>
+      <div class="endpoint-body">
+        <p style="font-size:13px;color:var(--muted)">Retourne les statistiques d'utilisation depuis le démarrage du serveur.</p>
+        <button class="btn btn-accent try-btn" onclick="tryEndpoint('GET','/stats')">Tester →</button>
+        <div class="response-box" id="resp-get-stats" style="display:none"></div>
+      </div>
+    </div>
+
+    <!-- DELETE /stats -->
+    <div class="endpoint-card">
+      <div class="endpoint-header" onclick="toggleEndpoint(this)">
+        <span class="method delete">DELETE</span>
+        <span class="endpoint-path">/stats</span>
+        <span class="endpoint-desc">Réinitialiser les statistiques</span>
+      </div>
+      <div class="endpoint-body">
+        <p style="font-size:13px;color:var(--muted)">Remet à zéro les compteurs de session côté serveur.</p>
+        <button class="btn btn-accent try-btn" onclick="tryEndpoint('DELETE','/stats')">Réinitialiser →</button>
+        <div class="response-box" id="resp-delete-stats" style="display:none"></div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /page-api -->
+
+</main>
+
+<script>
+const API = '';  /* même origine que le serveur */
+
+/* ═══════════════════════════════════════
+   API STATUS
+═══════════════════════════════════════ */
+async function checkApi() {
+  try {
+    const r = await fetch(API + '/status', { signal: AbortSignal.timeout(2000) });
+    const d = await r.json();
+    document.getElementById('api-dot').className = 'dot ok';
+    document.getElementById('api-status-text').textContent =
+      `API connectée — v${d.version}`;
+  } catch {
+    document.getElementById('api-dot').className = 'dot err';
+    document.getElementById('api-status-text').textContent = 'API non disponible (localhost:8000)';
+  }
+}
+checkApi();
+setInterval(checkApi, 15000);
+
+/* ═══════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════ */
+const loaded = {};
+function showPage(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  btn.classList.add('active');
+  if (id !== 'demo' && cameraActive) stopCamera();
+  if (id === 'demo' && allLetters.length === 0) loadSigns();
+  const mdMap = {
+    accueil: 'https://raw.githubusercontent.com/KerenDague/Detection_et_analyse_de_dactylologie_francaise/main/accueil.md',
+    donnees: 'https://raw.githubusercontent.com/KerenDague/Detection_et_analyse_de_dactylologie_francaise/main/donnees.md',
+    scripts: 'https://raw.githubusercontent.com/KerenDague/Detection_et_analyse_de_dactylologie_francaise/main/scripts.md',
+  };
+  if (mdMap[id] && !loaded[id]) { loaded[id] = true; loadMd(id, mdMap[id]); }
+}
+
+/* ═══════════════════════════════════════
+   MARKDOWN
+═══════════════════════════════════════ */
+async function loadMd(key, url) {
+  const el = document.getElementById('md-' + key);
+  try {
+    const r = await fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent(url));
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    el.innerHTML = md2html(await r.text());
+  } catch(e) {
+    el.innerHTML = '<p style="color:var(--accent)">Impossible de charger : ' + e.message + '</p>';
+  }
+}
+function md2html(t) {
+  return t
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/^### (.+)$/gm,'<h3>$1</h3>')
+    .replace(/^## (.+)$/gm,'<h2>$1</h2>')
+    .replace(/^# (.+)$/gm,'<h1>$1</h1>')
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g,'<em>$1</em>')
+    .replace(/`(.+?)`/g,'<code>$1</code>')
+    .replace(/\[(.+?)\]\((.+?)\)/g,'<a href="$2" target="_blank">$1</a>')
+    .replace(/^- (.+)$/gm,'<li>$1</li>')
+    .replace(/\n\n/g,'</p><p>')
+    .replace(/^(?!<)/gm, '');
+}
+loadMd('accueil','https://raw.githubusercontent.com/KerenDague/Detection_et_analyse_de_dactylologie_francaise/main/accueil.md');
+
+/* ═══════════════════════════════════════
+   CAMÉRA
+═══════════════════════════════════════ */
+let cameraActive = false, mediaStream = null, inferTimer = null;
+
+async function toggleCamera() {
+  cameraActive ? stopCamera() : await startCamera();
+}
+
+async function startCamera() {
+  try {
+    mediaStream = await navigator.mediaDevices.getUserMedia({ video: { width:640, height:480, facingMode:'user' } });
+    const vid = document.getElementById('cam-video');
+    vid.srcObject = mediaStream;
+    vid.style.display = 'block';
+    document.getElementById('cam-ph').style.display = 'none';
+    const btn = document.getElementById('cam-btn');
+    btn.textContent = '⏹  Arrêter la caméra';
+    btn.className = 'btn btn-stop';
+    cameraActive = true;
+    inferTimer = setInterval(runInference, 1500);
+  } catch(e) {
+    alert("Impossible d'ouvrir la caméra : " + e.message);
+  }
+}
+
+function stopCamera() {
+  clearInterval(inferTimer);
+  if (mediaStream) { mediaStream.getTracks().forEach(t => t.stop()); mediaStream = null; }
+  const vid = document.getElementById('cam-video');
+  vid.srcObject = null; vid.style.display = 'none';
+  document.getElementById('cam-ph').style.display = 'flex';
+  const btn = document.getElementById('cam-btn');
+  btn.textContent = '▶  Démarrer la caméra';
+  btn.className = 'btn btn-accent';
+  cameraActive = false;
+  resetUI();
+}
+
+function captureFrame() {
+  const vid = document.getElementById('cam-video');
+  const cvs = document.getElementById('cam-canvas');
+  cvs.width = vid.videoWidth || 320;
+  cvs.height = vid.videoHeight || 240;
+  cvs.getContext('2d').drawImage(vid, 0, 0);
+  return cvs.toDataURL('image/jpeg', 0.8);
+}
+
+async function runInference() {
+  if (!cameraActive) return;
+  const b64 = captureFrame();
+  try {
+    const r = await fetch(API + '/predict', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ image: b64, format: 'jpeg' }),
+      signal: AbortSignal.timeout(3000),
+    });
+    if (!r.ok) return;
+    const d = await r.json();
+    updatePrediction(d);
+    fetchStats();
+  } catch {}
+}
+
+function updatePrediction(d) {
+  const pct = Math.round(d.confidence * 100);
+  const lEl = document.getElementById('pred-letter');
+  if (lEl.textContent !== d.letter) {
+    lEl.textContent = d.letter;
+    lEl.classList.remove('pulse');
+    void lEl.offsetWidth;
+    lEl.classList.add('pulse');
+  }
+  document.getElementById('pred-info').textContent = `Confiance : ${pct} %`;
+  const color = pct >= 80 ? '#607040' : pct >= 50 ? '#A07820' : '#A02121';
+  const fill = document.getElementById('conf-fill');
+  fill.style.width = pct + '%';
+  fill.style.background = color;
+  document.getElementById('conf-pct').style.color = color;
+  document.getElementById('conf-pct').textContent = pct + ' %';
+  document.getElementById('proc-time').textContent = `Traité en ${d.processing_time_ms} ms`;
+
+  // Top-3
+  const rows = document.querySelectorAll('.top3-row');
+  d.top3.forEach((item, i) => {
+    const p = Math.round(item.confidence * 100);
+    rows[i].querySelector('.top3-letter').textContent = item.letter;
+    rows[i].querySelector('.top3-bar').style.width = p + '%';
+    rows[i].querySelector('.top3-pct').textContent = p + ' %';
+  });
+
+  // Type badge + description depuis API
+  fetchLetterInfo(d.letter);
+}
+
+async function fetchLetterInfo(letter) {
+  try {
+    const r = await fetch(API + '/letters/' + letter, { signal: AbortSignal.timeout(2000) });
+    if (!r.ok) return;
+    const d = await r.json();
+    document.getElementById('pred-type').textContent = d.type;
+    document.getElementById('letter-desc').textContent = d.description;
+  } catch {}
+}
+
+function resetUI() {
+  document.getElementById('pred-letter').textContent = '?';
+  document.getElementById('pred-info').textContent = 'En attente…';
+  document.getElementById('conf-fill').style.width = '0%';
+  document.getElementById('conf-pct').textContent = '0 %';
+  document.getElementById('pred-type').textContent = '–';
+  document.getElementById('letter-desc').textContent = '–';
+  document.getElementById('proc-time').textContent = '';
+  document.querySelectorAll('.top3-row').forEach(r => {
+    r.querySelector('.top3-letter').textContent = '–';
+    r.querySelector('.top3-bar').style.width = '0%';
+    r.querySelector('.top3-pct').textContent = '–';
+  });
+}
+
+/* ═══════════════════════════════════════
+   STATS
+═══════════════════════════════════════ */
+async function fetchStats() {
+  try {
+    const r = await fetch(API + '/stats', { signal: AbortSignal.timeout(2000) });
+    if (!r.ok) return;
+    const d = await r.json();
+    document.getElementById('st-total').textContent = d.total_predictions;
+    document.getElementById('st-rate').textContent = d.total_predictions
+      ? Math.round(d.high_confidence_rate * 100) + '%' : '–';
+    document.getElementById('st-ppm').textContent = d.predictions_per_minute || '–';
+  } catch {}
+}
+
+async function resetStats() {
+  try {
+    await fetch(API + '/stats', { method: 'DELETE' });
+    document.getElementById('st-total').textContent = '0';
+    document.getElementById('st-rate').textContent = '–';
+    document.getElementById('st-ppm').textContent = '–';
+  } catch {}
+}
+
+/* ═══════════════════════════════════════
+   API EXPLORER (page API)
+═══════════════════════════════════════ */
+function toggleEndpoint(header) {
+  const body = header.nextElementSibling;
+  body.classList.toggle('open');
+}
+
+const respIds = {
+  'GET /': 'resp-get-root',
+  'GET /letters': 'resp-get-letters',
+  'GET /letters?type=voyelle': 'resp-get-letters',
+  'GET /letters?type=consonne': 'resp-get-letters',
+  'GET /stats': 'resp-get-stats',
+  'DELETE /stats': 'resp-delete-stats',
+};
+
+async function tryEndpoint(method, path) {
+  const key = method + ' ' + path;
+  const boxId = respIds[key] || ('resp-' + method.toLowerCase() + '-' + path.replace(/\//g,'-').replace(/[{}?=]/g,''));
+  let box = document.getElementById(boxId);
+  if (!box) return;
+  box.style.display = 'block';
+  box.textContent = 'Chargement…';
+  try {
+    const r = await fetch(API + path, { method, headers: { 'Content-Type': 'application/json' } });
+    const d = await r.json();
+    box.textContent = JSON.stringify(d, null, 2);
+    // update stats display if we just hit /stats
+    if (path === '/stats' && method === 'GET') {
+      if (d.total_predictions !== undefined) {
+        document.getElementById('st-total').textContent = d.total_predictions;
+      }
+    }
+  } catch(e) {
+    box.textContent = '❌ Erreur : ' + e.message + '\n\nAssurez-vous que le serveur FastAPI tourne :\nuvicorn main:app --reload';
+  }
+}
+
+const letterRespBox = document.getElementById('resp-get-letter');
+// handled inline via letter-input
+
+async function tryCapturePredict() {
+  const box = document.getElementById('resp-post-predict');
+  box.style.display = 'block';
+  if (!cameraActive) {
+    box.textContent = '⚠ La caméra doit être active (onglet Démo) pour capturer une image.';
+    return;
+  }
+  box.textContent = 'Capture et envoi…';
+  const b64 = captureFrame();
+  try {
+    const r = await fetch(API + '/predict', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ image: b64, format: 'jpeg' }),
+    });
+    const d = await r.json();
+    box.textContent = JSON.stringify(d, null, 2);
+  } catch(e) {
+    box.textContent = '❌ ' + e.message;
+  }
+}
+
+// Fix: letter endpoint
+document.addEventListener('DOMContentLoaded', () => {
+  const li = document.getElementById('letter-input');
+  if (li) li.addEventListener('input', e => { e.target.value = e.target.value.toUpperCase().slice(-1); });
+});
+
+// Override GET /letters/{letter} try button since path is dynamic
+const getLetterBox = document.getElementById('resp-get-letter');
+window.tryLetterEndpoint = async () => {
+  const letter = document.getElementById('letter-input').value.toUpperCase();
+  getLetterBox.style.display = 'block';
+  getLetterBox.textContent = 'Chargement…';
+  try {
+    const r = await fetch(API + '/letters/' + letter);
+    const d = await r.json();
+    getLetterBox.textContent = JSON.stringify(d, null, 2);
+  } catch(e) {
+    getLetterBox.textContent = '❌ ' + e.message;
+  }
+};
+
+/* ═══════════════════════════════════════
+   PANNEAU SIGNES (colonne droite démo)
+═══════════════════════════════════════ */
+let allLetters = [];
+let currentSignFilter = 'all';
+
+async function loadSigns() {
+  try {
+    const r = await fetch(API + '/letters', { signal: AbortSignal.timeout(3000) });
+    const d = await r.json();
+    allLetters = d.letters;
+  } catch {
+    allLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').map(l => ({
+      letter: l, type: l.match(/[AEIOU]/) ? 'voyelle' : 'consonne',
+      description: '–', difficulty: '–', gif_url: null
+    }));
+  }
+  renderSigns(currentSignFilter);
+}
+
+function filterSigns(type, btn) {
+  currentSignFilter = type;
+  document.querySelectorAll('.sfbtn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderSigns(type);
+}
+
+function renderSigns(type) {
+  const grid = document.getElementById('signs-grid');
+  if (!grid) return;
+  const filtered = type === 'all' ? allLetters : allLetters.filter(l => l.type === type);
+  grid.innerHTML = filtered.map(l => `
+    <div class="sign-thumb" id="st-${l.letter}" onclick="selectSign(${JSON.stringify(l).replace(/"/g,'&quot;')})">
+      <div class="st-gif">
+        ${l.gif_url
+          ? `<img src="${l.gif_url}" alt="${l.letter}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/><span class="st-ph" style="display:none">${l.letter}</span>`
+          : `<span class="st-ph">${l.letter}</span>`}
+      </div>
+      <div class="st-label">${l.letter}</div>
+    </div>`).join('');
+}
+
+function selectSign(l) {
+  // Highlight selected
+  document.querySelectorAll('.sign-thumb').forEach(t => t.classList.remove('active'));
+  const el = document.getElementById('st-' + l.letter);
+  if (el) el.classList.add('active');
+
+  // Show big card
+  const card = document.getElementById('active-sign-card');
+  const gifDiv = document.getElementById('asc-gif');
+  document.getElementById('asc-badge').textContent = l.letter;
+  document.getElementById('asc-ph').textContent = l.gif_url ? '' : l.letter;
+  document.getElementById('asc-title').textContent = l.type + ' — ' + l.difficulty;
+  document.getElementById('asc-desc').textContent = l.description;
+
+  // Update GIF
+  const existing = gifDiv.querySelector('img');
+  if (existing) existing.remove();
+  document.getElementById('asc-ph').style.display = l.gif_url ? 'none' : 'block';
+  if (l.gif_url) {
+    const img = document.createElement('img');
+    img.src = l.gif_url;
+    img.alt = 'Signe ' + l.letter;
+    img.onerror = () => { img.remove(); document.getElementById('asc-ph').style.display = 'block'; };
+    gifDiv.insertBefore(img, gifDiv.firstChild);
+  }
+
+  card.classList.add('show');
+}
+
+// Charger les signes dès qu'on arrive sur la page démo
+document.querySelectorAll('nav button').forEach((btn, i) => {
+  btn.addEventListener('click', () => {
+    if (btn.textContent.trim() === 'Démo' && allLetters.length === 0) loadSigns();
+  });
+});
+// Aussi au chargement si démo est active par défaut
+window.addEventListener('DOMContentLoaded', () => {
+  if (document.getElementById('page-demo').classList.contains('active')) loadSigns();
+});
+</script>
+</body>
+</html>
