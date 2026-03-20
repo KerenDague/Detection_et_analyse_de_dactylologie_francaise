@@ -11,7 +11,6 @@ Lancement :
 Puis ouvrir  →  http://localhost:8000
 Swagger UI   →  http://localhost:8000/docs
 
-
 """
 
 import base64
@@ -44,12 +43,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# Dossier gifs
-GIFS_DIR = Path(__file__).parent / "gifs"
-GIFS_DIR.mkdir(exist_ok=True)
-app.mount("/gifs", StaticFiles(directory=str(GIFS_DIR)), name="gifs")
-
 
 # Données
 LETTERS_DB = {
@@ -185,7 +178,7 @@ def status():
     )
 
 
-@app.get("/lettders", summary="Liste des lettres reconnues")
+@app.get("/letters", summary="Liste des lettres reconnues")
 def get_letters(type: Optional[str] = None):
     """
     Retourne toutes les lettres avec leurs métadonnées.
@@ -198,7 +191,7 @@ def get_letters(type: Optional[str] = None):
         result.append({
             "letter": letter,
             **info,
-            "gif_url": f"https://raw.githubusercontent.com/KerenDague/Detection_et_analyse_de_dactylologie_francaise/main/GIF/{letter}.gif",
+            "gif_url": f"https://raw.githubusercontent.com/KerenDague/Detection_et_analyse_de_dactylologie_francaise/main/GIF/{letter.lower()}.gif",
         })
     return {"count": len(result), "letters": result}
 
