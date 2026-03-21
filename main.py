@@ -11,6 +11,7 @@ Lancement :
 Puis ouvrir  →  http://localhost:8000
 Swagger UI   →  http://localhost:8000/docs
 
+
 """
 
 import base64
@@ -25,7 +26,6 @@ import numpy as np
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
-from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 
@@ -43,6 +43,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 # Données
 LETTERS_DB = {
@@ -191,7 +192,7 @@ def get_letters(type: Optional[str] = None):
         result.append({
             "letter": letter,
             **info,
-            "gif_url": f"https://raw.githubusercontent.com/KerenDague/Detection_et_analyse_de_dactylologie_francaise/main/GIF/{letter.lower()}.gif",
+            "gif_url": f"https://raw.githubusercontent.com/KerenDague/Detection_et_analyse_de_dactylologie_francaise/main/GIF/{letter}.gif",
         })
     return {"count": len(result), "letters": result}
 

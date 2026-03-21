@@ -59,10 +59,12 @@ main{flex:1;display:flex;flex-direction:column}
 @keyframes spin{to{transform:rotate(360deg)}}
 
 /* ── Demo page ── */
-#page-demo.active{display:flex;gap:20px;padding:24px 28px;align-items:flex-start}
-.demo-left{flex:0 0 480px;display:flex;flex-direction:column;gap:14px}
-.demo-right{flex:0 0 220px;display:flex;flex-direction:column;gap:14px}
+#page-demo.active{display:block;padding:24px 28px;}
+.demo-columns {display: flex;gap: 20px;align-items: flex-start;}
+.demo-left{flex:1px;display:flex;flex-direction:column;gap:14px}
+.demo-right{flex:1px;display:flex;flex-direction:column;gap:14px}
 .demo-signs{flex:1;display:flex;flex-direction:column;gap:12px;min-width:0}
+.page-title {text-align: center;font-family: 'Playfair Display', serif;font-size: 1.8rem;margin-bottom: 20px;width: 100%;}
 
 .col-title{font-family:'Playfair Display',serif;font-size:1.15rem;color:var(--text)}
 
@@ -90,7 +92,7 @@ main{flex:1;display:flex;flex-direction:column}
 .tip::before{content:"–";position:absolute;left:0;color:var(--border)}
 
 /* Prediction */
-.pred-card{background:var(--card);border:1px solid var(--border);border-radius:12px;height:190px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative}
+.pred-card{background:var(--card);border:1px solid var(--border);border-radius:12px;height:auto;aspect-ratio: 1/1;width: 100%;max-width: 240px;margin: 0 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative}
 #pred-letter{font-family:'Playfair Display',serif;font-size:96px;font-weight:900;color:var(--accent);line-height:1;transition:all .2s}
 #pred-letter.pulse{animation:pulse .3s ease}
 @keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.08)}100%{transform:scale(1)}}
@@ -118,22 +120,6 @@ main{flex:1;display:flex;flex-direction:column}
 
 /* processing time */
 #proc-time{font-size:11px;color:var(--border);text-align:right;margin-top:4px}
-
-/* ── API page ── */
-#page-api.active{display:block}
-.api-section{max-width:840px;margin:0 auto}
-.endpoint-card{background:var(--card);border:1px solid var(--border);border-radius:10px;margin-bottom:14px;overflow:hidden}
-.endpoint-header{display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;user-select:none}
-.method{font-size:11px;font-weight:700;padding:3px 9px;border-radius:4px;letter-spacing:.6px}
-.method.get{background:#d4eedf;color:#2d6b43}
-.method.post{background:#d4e3f5;color:#1a4a7a}
-.method.delete{background:#f5d4d4;color:#7a1a1a}
-.endpoint-path{font-family:'DM Mono',monospace,sans-serif;font-size:13px;font-weight:600;color:var(--text)}
-.endpoint-desc{font-size:12px;color:var(--muted);margin-left:auto}
-.endpoint-body{display:none;padding:0 18px 16px;border-top:1px solid var(--border)}
-.endpoint-body.open{display:block}
-.try-btn{margin-top:10px;height:34px;font-size:12px}
-.response-box{margin-top:10px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px 14px;font-size:12px;font-family:'DM Mono',monospace,sans-serif;color:var(--muted);white-space:pre-wrap;max-height:220px;overflow-y:auto;line-height:1.5}
 
 /* Panneau signes latéral (toujours visible dans la démo) */
 .signs-panel{background:var(--card);border:1px solid var(--border);border-radius:12px;display:flex;flex-direction:column;overflow:hidden;height:calc(100vh - 160px);min-height:500px}
@@ -183,9 +169,9 @@ main{flex:1;display:flex;flex-direction:column}
   <button class="active" onclick="showPage('accueil',this)">Accueil</button>
   <button onclick="showPage('donnees',this)">Données</button>
   <button onclick="showPage('scripts',this)">Scripts</button>
-  <button onclick="showPage('scripts',this)">Résultats</button>
+  <button onclick="showPage('resultats',this)">Résultats</button>
   <button onclick="showPage('demo',this)">Démo</button>
-  <button onclick="showPage('api',this)">Documentations</button>
+  <button onclick="showPage('documentation',this)">Documentation</button>
 </nav>
 
 <main>
@@ -209,212 +195,117 @@ main{flex:1;display:flex;flex-direction:column}
 </div>
 
 <!-- ── Résultats ── -->
-<div id="page-résultats" class="page simple-page">
-  <h2>Scripts</h2>
-  <div class="md-box" id="md-scripts"><span class="spinner"></span>Chargement…</div>
+<div id="page-resultats" class="page simple-page">
+  <h2>Résultats</h2>
+  <div class="md-box" id="md-resultats"><span class="spinner"></span>Chargement…</div>
 </div>
 
 <!-- ── Démo ── -->
 <div id="page-demo" class="page">
-
-  <!-- Colonne gauche : caméra + stats -->
-  <div class="demo-left">
-    <p class="col-title">Flux Caméra en Direct</p>
-    <div id="cam-wrap">
-      <div class="cam-placeholder" id="cam-ph">
-        <span class="cam-icon">📷</span>
-        <span>Caméra inactive</span>
-        <span style="font-size:11px">Cliquez sur Démarrer</span>
+  <h2 class="page-title">Démo</h2>
+  <div class="demo-columns">
+    <!-- Colonne gauche : caméra + stats -->
+    <div class="demo-left">
+      <p class="col-title">Flux Caméra en Direct</p>
+      <div id="cam-wrap">
+        <div class="cam-placeholder" id="cam-ph">
+          <span class="cam-icon">📷</span>
+          <span>Caméra inactive</span>
+          <span style="font-size:11px">Cliquez sur Démarrer</span>
+        </div>
+        <video id="cam-video" autoplay playsinline></video>
+        <canvas id="cam-canvas"></canvas>
       </div>
-      <video id="cam-video" autoplay playsinline></video>
-      <canvas id="cam-canvas"></canvas>
-    </div>
-    <button class="btn btn-accent" id="cam-btn" onclick="toggleCamera()">▶&nbsp; Démarrer la caméra</button>
-    <div class="card">
-      <div class="card-title">Conseils</div>
-      <p class="tip">Placez votre main bien dans le cadre</p>
-      <p class="tip">Éclairage homogène, fond neutre de préférence</p>
-      <p class="tip">Gardez votre main à 30–50 cm de la caméra</p>
-      <p class="tip">Restez immobile 1–2 secondes pour la prédiction</p>
-    </div>
-    <div class="card">
-      <div class="card-title">Session</div>
-      <div class="stat-grid">
-        <div class="stat-box"><div class="stat-val" id="st-total">0</div><div class="stat-lbl">Prédictions</div></div>
-        <div class="stat-box"><div class="stat-val" id="st-rate">–</div><div class="stat-lbl">Haute conf. %</div></div>
-        <div class="stat-box"><div class="stat-val" id="st-ppm">–</div><div class="stat-lbl">Pred/min</div></div>
+      <button class="btn btn-accent" id="cam-btn" onclick="toggleCamera()">▶&nbsp; Démarrer la caméra</button>
+      <div class="card">
+        <div class="card-title">Conseils</div>
+        <p class="tip">Placez votre main bien dans le cadre</p>
+        <p class="tip">Éclairage homogène, fond neutre de préférence</p>
+        <p class="tip">Gardez votre main à 30–50 cm de la caméra</p>
+        <p class="tip">Restez immobile 1–2 secondes pour la prédiction</p>
       </div>
-      <button class="btn btn-ghost" style="margin-top:10px;height:32px;font-size:12px" onclick="resetStats()">Réinitialiser les stats</button>
-    </div>
-  </div>
-
-  <!-- Colonne centre : prédiction -->
-  <div class="demo-right">
-    <p class="col-title">Prédiction</p>
-    <div class="pred-card">
-      <span id="pred-type">–</span>
-      <div id="pred-letter">?</div>
-      <div id="pred-info">En attente…</div>
-    </div>
-    <div class="card">
-      <div class="card-title">Confiance</div>
-      <div class="conf-track"><div id="conf-fill"></div></div>
-      <div id="conf-pct">0 %</div>
-    </div>
-    <div class="card">
-      <div class="card-title">Top 3</div>
-      <div id="top3-list">
-        <div class="top3-row"><span class="top3-letter">–</span><div class="top3-bar-wrap"><div class="top3-bar" style="width:0%"></div></div><span class="top3-pct">–</span></div>
-        <div class="top3-row"><span class="top3-letter">–</span><div class="top3-bar-wrap"><div class="top3-bar" style="width:0%"></div></div><span class="top3-pct">–</span></div>
-        <div class="top3-row"><span class="top3-letter">–</span><div class="top3-bar-wrap"><div class="top3-bar" style="width:0%"></div></div><span class="top3-pct">–</span></div>
-      </div>
-      <div id="proc-time"></div>
-    </div>
-    <div class="card">
-      <div class="card-title">Description du signe prédit</div>
-      <div id="letter-desc" style="font-size:13px;color:var(--muted);line-height:1.65">–</div>
-    </div>
-  </div>
-
-  <!-- Colonne droite : signes de référence -->
-  <div class="demo-signs">
-    <p class="col-title">Signes de référence</p>
-
-    <!-- Carte GIF agrandi du signe sélectionné -->
-    <div class="active-sign-card" id="active-sign-card">
-      <div class="asc-gif" id="asc-gif">
-        <span class="asc-gif-ph" id="asc-ph"></span>
-        <span class="asc-letter-badge" id="asc-badge"></span>
-      </div>
-      <div class="asc-info">
-        <div class="asc-title" id="asc-title"></div>
-        <div class="asc-desc" id="asc-desc"></div>
+      <div class="card">
+        <div class="card-title">Session</div>
+        <div class="stat-grid">
+          <div class="stat-box"><div class="stat-val" id="st-total">0</div><div class="stat-lbl">Prédictions</div></div>
+          <div class="stat-box"><div class="stat-val" id="st-rate">–</div><div class="stat-lbl">Haute conf. %</div></div>
+          <div class="stat-box"><div class="stat-val" id="st-ppm">–</div><div class="stat-lbl">Pred/min</div></div>
+        </div>
+        <button class="btn btn-ghost" style="margin-top:10px;height:32px;font-size:12px" onclick="resetStats()">Réinitialiser les stats</button>
       </div>
     </div>
 
-    <!-- Grille des lettres -->
-    <div class="signs-panel">
-      <div class="signs-panel-hd">
-        <div class="signs-panel-title">Choisissez un signe à reproduire</div>
-        <div class="signs-filter">
-          <button class="sfbtn active" onclick="filterSigns('all',this)">Toutes</button>
-          <button class="sfbtn" onclick="filterSigns('voyelle',this)">Voyelles</button>
-          <button class="sfbtn" onclick="filterSigns('consonne',this)">Consonnes</button>
+    <!-- Colonne centre : prédiction -->
+    <div class="demo-right">
+      <p class="col-title">Prédiction</p>
+      <div class="pred-card">
+        <span id="pred-type">–</span>
+        <div id="pred-letter">?</div>
+        <div id="pred-info">En attente…</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Confiance</div>
+        <div class="conf-track"><div id="conf-fill"></div></div>
+        <div id="conf-pct">0 %</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Top 3</div>
+        <div id="top3-list">
+          <div class="top3-row"><span class="top3-letter">–</span><div class="top3-bar-wrap"><div class="top3-bar" style="width:0%"></div></div><span class="top3-pct">–</span></div>
+          <div class="top3-row"><span class="top3-letter">–</span><div class="top3-bar-wrap"><div class="top3-bar" style="width:0%"></div></div><span class="top3-pct">–</span></div>
+          <div class="top3-row"><span class="top3-letter">–</span><div class="top3-bar-wrap"><div class="top3-bar" style="width:0%"></div></div><span class="top3-pct">–</span></div>
+        </div>
+        <div id="proc-time"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Description du signe prédit</div>
+        <div id="letter-desc" style="font-size:13px;color:var(--muted);line-height:1.65">–</div>
+      </div>
+    </div>
+
+    <!-- Colonne droite : signes de référence -->
+    <div class="demo-signs">
+      <p class="col-title">Signes de référence</p>
+
+      <!-- Carte GIF agrandi du signe sélectionné -->
+      <div class="active-sign-card" id="active-sign-card">
+        <div class="asc-gif" id="asc-gif">
+          <span class="asc-gif-ph" id="asc-ph"></span>
+          <span class="asc-letter-badge" id="asc-badge"></span>
+        </div>
+        <div class="asc-info">
+          <div class="asc-title" id="asc-title"></div>
+          <div class="asc-desc" id="asc-desc"></div>
         </div>
       </div>
-      <div class="signs-scroll">
-        <div class="signs-grid" id="signs-grid">
-          <div style="grid-column:1/-1;text-align:center;color:var(--muted);font-size:12px;padding:20px">
-            <span class="spinner"></span> Chargement…
+
+      <!-- Grille des lettres -->
+      <div class="signs-panel">
+        <div class="signs-panel-hd">
+          <div class="signs-panel-title">Choisissez un signe à reproduire</div>
+          <div class="signs-filter">
+            <button class="sfbtn active" onclick="filterSigns('all',this)">Toutes</button>
+            <button class="sfbtn" onclick="filterSigns('voyelle',this)">Voyelles</button>
+            <button class="sfbtn" onclick="filterSigns('consonne',this)">Consonnes</button>
+          </div>
+        </div>
+        <div class="signs-scroll">
+          <div class="signs-grid" id="signs-grid">
+            <div style="grid-column:1/-1;text-align:center;color:var(--muted);font-size:12px;padding:20px">
+              <span class="spinner"></span> Chargement…
+            </div>
           </div>
         </div>
       </div>
     </div>
-
   </div>
-
 </div><!-- /page-demo -->
 
-<!-- ── Documentations ── -->
-<div id="page-api" class="page">
-  <div class="api-section">
-    <h2 style="font-family:'Playfair Display',serif;font-size:1.8rem;margin-bottom:6px">Documentations</h2>
-    <p style="font-size:13px;color:var(--muted);margin-bottom:24px">Base URL : <code style="background:var(--card);padding:2px 7px;border-radius:4px;font-size:12px">http://localhost:8000</code></p>
-
-    <!-- GET / -->
-    <div class="endpoint-card">
-      <div class="endpoint-header" onclick="toggleEndpoint(this)">
-        <span class="method get">GET</span>
-        <span class="endpoint-path">/</span>
-        <span class="endpoint-desc">Statut de l'API</span>
-      </div>
-      <div class="endpoint-body">
-        <p style="font-size:13px;color:var(--muted)">Vérifie la disponibilité du serveur et retourne ses métadonnées (version, uptime, nombre de lettres).</p>
-        <button class="btn btn-accent try-btn" onclick="tryEndpoint('GET','/')">Tester →</button>
-        <div class="response-box" id="resp-get-root" style="display:none"></div>
-      </div>
-    </div>
-
-    <!-- GET /letters -->
-    <div class="endpoint-card">
-      <div class="endpoint-header" onclick="toggleEndpoint(this)">
-        <span class="method get">GET</span>
-        <span class="endpoint-path">/letters</span>
-        <span class="endpoint-desc">Liste des lettres supportées</span>
-      </div>
-      <div class="endpoint-body">
-        <p style="font-size:13px;color:var(--muted)">Retourne toutes les lettres de l'alphabet dactylologique avec leurs métadonnées.<br>Paramètre optionnel : <code>?type=voyelle</code> ou <code>?type=consonne</code></p>
-        <div style="display:flex;gap:8px;margin-top:8px">
-          <button class="btn btn-accent try-btn" onclick="tryEndpoint('GET','/letters')">Toutes →</button>
-          <button class="btn btn-ghost try-btn" onclick="tryEndpoint('GET','/letters?type=voyelle')">Voyelles →</button>
-          <button class="btn btn-ghost try-btn" onclick="tryEndpoint('GET','/letters?type=consonne')">Consonnes →</button>
-        </div>
-        <div class="response-box" id="resp-get-letters" style="display:none"></div>
-      </div>
-    </div>
-
-    <!-- GET /letters/{letter} -->
-    <div class="endpoint-card">
-      <div class="endpoint-header" onclick="toggleEndpoint(this)">
-        <span class="method get">GET</span>
-        <span class="endpoint-path">/letters/{letter}</span>
-        <span class="endpoint-desc">Détails d'une lettre</span>
-      </div>
-      <div class="endpoint-body">
-        <p style="font-size:13px;color:var(--muted)">Retourne les informations détaillées pour une lettre donnée.</p>
-        <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
-          <input id="letter-input" type="text" maxlength="1" value="A" style="width:44px;height:34px;text-align:center;border:1px solid var(--border);border-radius:6px;font-size:16px;font-weight:700;background:var(--bg);color:var(--text);text-transform:uppercase"/>
-          <button class="btn btn-accent try-btn" onclick="tryEndpoint('GET','/letters/'+document.getElementById('letter-input').value.toUpperCase())">Chercher →</button>
-        </div>
-        <div class="response-box" id="resp-get-letter" style="display:none"></div>
-      </div>
-    </div>
-
-    <!-- POST /predict -->
-    <div class="endpoint-card">
-      <div class="endpoint-header" onclick="toggleEndpoint(this)">
-        <span class="method post">POST</span>
-        <span class="endpoint-path">/predict</span>
-        <span class="endpoint-desc">Prédire une lettre depuis une image</span>
-      </div>
-      <div class="endpoint-body">
-        <p style="font-size:13px;color:var(--muted)">Envoie une image encodée en base64. Retourne la lettre détectée, la confiance et le top-3.</p>
-        <p style="font-size:12px;color:var(--muted);margin-top:6px">Corps JSON : <code>{"image": "&lt;base64&gt;", "format": "jpeg"}</code></p>
-        <button class="btn btn-accent try-btn" onclick="tryCapturePredict()">Capturer depuis la caméra →</button>
-        <div class="response-box" id="resp-post-predict" style="display:none"></div>
-      </div>
-    </div>
-
-    <!-- GET /stats -->
-    <div class="endpoint-card">
-      <div class="endpoint-header" onclick="toggleEndpoint(this)">
-        <span class="method get">GET</span>
-        <span class="endpoint-path">/stats</span>
-        <span class="endpoint-desc">Statistiques de session</span>
-      </div>
-      <div class="endpoint-body">
-        <p style="font-size:13px;color:var(--muted)">Retourne les statistiques d'utilisation depuis le démarrage du serveur.</p>
-        <button class="btn btn-accent try-btn" onclick="tryEndpoint('GET','/stats')">Tester →</button>
-        <div class="response-box" id="resp-get-stats" style="display:none"></div>
-      </div>
-    </div>
-
-    <!-- DELETE /stats -->
-    <div class="endpoint-card">
-      <div class="endpoint-header" onclick="toggleEndpoint(this)">
-        <span class="method delete">DELETE</span>
-        <span class="endpoint-path">/stats</span>
-        <span class="endpoint-desc">Réinitialiser les statistiques</span>
-      </div>
-      <div class="endpoint-body">
-        <p style="font-size:13px;color:var(--muted)">Remet à zéro les compteurs de session côté serveur.</p>
-        <button class="btn btn-accent try-btn" onclick="tryEndpoint('DELETE','/stats')">Réinitialiser →</button>
-        <div class="response-box" id="resp-delete-stats" style="display:none"></div>
-      </div>
-    </div>
-
-  </div>
-</div><!-- /page-api -->
+<!-- ── Documentation ── -->
+<div id="page-documentation" class="page simple-page">
+  <h2>Documentation</h2>
+  <div class="md-box" id="md-documentation"><span class="spinner"></span>Chargement…</div>
+</div>
 
 </main>
 
@@ -443,6 +334,14 @@ setInterval(checkApi, 15000);
    NAVIGATION
 ═══════════════════════════════════════ */
 const loaded = {};
+const MD_URLS = {
+  accueil:  'https://raw.githubusercontent.com/KerenDague/Detection_et_analyse_de_dactylologie_francaise/main/accueil.md',
+  donnees:  'https://raw.githubusercontent.com/KerenDague/Detection_et_analyse_de_dactylologie_francaise/main/donnees.md',
+  scripts:  'https://raw.githubusercontent.com/KerenDague/Detection_et_analyse_de_dactylologie_francaise/main/scripts.md',
+  resultats:'https://raw.githubusercontent.com/KerenDague/Detection_et_analyse_de_dactylologie_francaise/main/resultats.md',
+  documentation:'https://raw.githubusercontent.com/KerenDague/Detection_et_analyse_de_dactylologie_francaise/main/documentation.md',
+};
+
 function showPage(id, btn) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
@@ -450,28 +349,27 @@ function showPage(id, btn) {
   btn.classList.add('active');
   if (id !== 'demo' && cameraActive) stopCamera();
   if (id === 'demo' && allLetters.length === 0) loadSigns();
-  const mdMap = {
-    accueil: 'https://raw.githubusercontent.com/KerenDague/Detection_et_analyse_de_dactylologie_francaise/main/accueil.md',
-    donnees: 'https://raw.githubusercontent.com/KerenDague/Detection_et_analyse_de_dactylologie_francaise/main/donnees.md',
-    scripts: 'https://raw.githubusercontent.com/KerenDague/Detection_et_analyse_de_dactylologie_francaise/main/scripts.md',
-    resultats : 'link resultats'
-  };
-  if (mdMap[id] && !loaded[id]) { loaded[id] = true; loadMd(id, mdMap[id]); }
+  const mdPages = ['accueil', 'donnees', 'scripts', 'resultats'];
+  if (mdPages.includes(id) && !loaded[id]) {
+    loaded[id] = true;
+    loadMd(id);
+  }
 }
 
 /* ═══════════════════════════════════════
    MARKDOWN
 ═══════════════════════════════════════ */
-async function loadMd(key, url) {
+async function loadMd(key) {
   const el = document.getElementById('md-' + key);
   try {
-    const r = await fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent(url));
+    const r = await fetch(MD_URLS[key], { signal: AbortSignal.timeout(5000) });
     if (!r.ok) throw new Error('HTTP ' + r.status);
     el.innerHTML = md2html(await r.text());
   } catch(e) {
     el.innerHTML = '<p style="color:var(--accent)">Impossible de charger : ' + e.message + '</p>';
   }
 }
+
 function md2html(t) {
   return t
     .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
@@ -486,7 +384,9 @@ function md2html(t) {
     .replace(/\n\n/g,'</p><p>')
     .replace(/^(?!<)/gm, '');
 }
-loadMd('accueil','https://raw.githubusercontent.com/KerenDague/Detection_et_analyse_de_dactylologie_francaise/main/accueil.md');
+
+// Chargement initial de l'accueil
+loadMd('accueil');
 
 /* ═══════════════════════════════════════
    CAMÉRA
