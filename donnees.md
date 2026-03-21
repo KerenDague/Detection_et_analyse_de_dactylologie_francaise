@@ -2,9 +2,18 @@
 
 ## Détail des données :
 
+### Corpus global du projet :
+
+
 ### Vidéos originales :
 Les vidéos originales ont été tournées à notre demande par des personnes que nous connaissons (ou nous-mêmes) qui ont accepté de nous transmettre leurs données dans le cadre de notre projet. Elles nous les ont envoyés soit sous forme de petites vidéos, une vidéo par signe soit sous forme de vidéo longue comprenant tous les signes dans une seule vidéo. Dans le second cas, il nous a fallu dans un premier temps effectuer un découpage manuel des vidéos puis une vérification visuelle des signes tandis que pour les petites vidéos seule l'étape de vérification visuelle était nécessaire. Suite à cette vérification, certaines vidéos ont été jugées inutilisables car le signe n'était pas produit correctement ou avec une précision suffisante pour que nous prenions le risque de le fournir à notre modèle et que cela puisse fausser nos prédictions.
 Les vidéos sont classées en petits sous-corpus qui correspondent aux vidéos sur lesquelles une même personne apparaît, elles sont nommées telles que : *InitialeprénomInitialenom_lettre.mp4* (en cas de doublons comme MM par exemple nous avons ajouté la deuxième lettre du prénom donnant ainis MiM ou encore MaM), de manière à ce que nous puissions nous repérer plus facilement dans nos données. 
 
 ### Autorisations de droit à l'image : 
 Dans un soucis de respecter la législation en vigueur concernant l’utilisation de données personnelles, en particulier lorsqu’il s’agit de vidéos où les personnes sont identifiables, nous avons fait le choix de demander aux participants nous ayant envoyé des vidéos de signer une autorisation de droit à l'imae. Cela nous permettant de protéger à la fois less participants et l'équipe du projet, le droit à l’image protègeant toute personne contre l’utilisation, la diffusion ou la reproduction de son image sans son consentement explicite. Il était essentiel pour nous de nous assurer du consentement éclairé des participants ainsi que de leur compréhension des conditions d'utilisation de leurs données (ici analyse seulement). En effet, les vidéos collectées ont été tournées uniquement dans le cadre de notre projet, ainsi elle ne pourront être utilisés que dans ce cadre précis.
+
+### Videos de corpus préexistants :
+Il s'agit ici de vidéos récupérées de corpus trouvés sur des sites comme Ortolang comme 40breves duquel nous avons récupérés des extraits ou des ressources auxquelles on nous a gracieusement donné accès suite à une prise de contact, dans notre cas les ressources du site *Commentcasesigne*.
+
+### Vidéos GIF :
+Les vidéos de ce dossier ont été tournées uniquement dans le but de les transformer en gifs par la suite il s'agit donc uniquement d'une main en mmouvement sur fond blanc afin d'avoir des images les plus claires possibles. Cela a permis ensuite de faire tourner le script pour la création des gifs sans que celui-ci ne prenne en compte les vêtements ou autres détails qui auraient pu apparaître à l'image avec d'autres vidéos.
