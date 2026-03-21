@@ -15,7 +15,7 @@ Ce script :
 
 2. Crée un Dataset PyTorch (LSFDataset) en paddant/tronquant les séquences
    à la longueur maximale calculée via la méthode IQR, et enregistre :
-   - les fichiers .npy paddés dans un dossier par lettre (corpus_pretraite_padded/)
+   - les fichiers .npy paddés dans un dossier par lettre (co Les nouveaux fichiers npy paddés sont ajoutés dans un nouveau dossier (corpus_pretraite_padded), et le dataset dans un fichier dataset_lsf.pt. rpus_pretraite_padded/)
    - l'ensemble du dataset (tenseurs + labels + métadonnées) dans un fichier .pt (dataset_lsf.pt)
 """
 
