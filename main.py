@@ -192,7 +192,7 @@ def get_letters(type: Optional[str] = None):
         result.append({
             "letter": letter,
             **info,
-            "gif_url": f"https://raw.githubusercontent.com/KerenDague/Detection_et_analyse_de_dactylologie_francaise/main/GIF/{letter}.gif",
+            "gif_url": f"https://raw.githubusercontent.com/KerenDague/Detection_et_analyse_de_dactylologie_francaise/main/GIF/{letter.lower()}.gif",
         })
     return {"count": len(result), "letters": result}
 
