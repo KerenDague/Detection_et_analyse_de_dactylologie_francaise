@@ -13,9 +13,10 @@ Le serveur sert également directement le fichier index.html à la racine, ce qu
 
 - **interface_local.py :** Ce script est un fichier test d'interface local produit en amont afin que nous puissions visualiser un peu ce que nous voulions obtenir ensuite entermes d'interface.
 
-### Scripts pour le traitement des données : 
-- **run_all.sh :** Permet de lancer tous les scripts de traitement des données dans le bon ordre en une seule commande.
+### Script pour l'exécution :
+- **run_all.sh :** Permet de lancer tous les scripts de traitement des données et le script d'analyse des données dans le bon ordre en une seule commande.
 
+### Scripts pour le traitement des données : 
 - **trier_corpus:** Ce premier script permet de récupérer les images et de les ranger dans des sous-dossiers par lettre dans un dossier "corpus_lsf".
 
 - **mediapipe_extraction :** Ce script utilise le module MediaPipe et le modèle HandLandmarker pour extraire les gestes des vidéos. Il prend en entrée des vidéos (fichiers mp4 ou mov) et produit des fichiers npy ainsi que des vidéos de débogage (fichiers mp4). Le modèle détermine 21 points à différents endroits de la main et les stocke sous forme de vecteurs dans des fichiers npy. Pour s'assurer que les mains étaient bien captées et qu'aucun mouvement ne parasitait la compréhension, le script enregistre également les vidéos affichant les points détectés, ce qui a permis de vérifier que le modèle captait bien le mouvement des mains et que les vecteurs transmis au modèle correspondaient bien à des points de la main. Le script s'articule autour de deux fonctions principales et d'une boucle : la fonction *traiter_image* traite une image fixe, détecte les points de la main via le mode "IMAGE" de HandLandmarker, génère une image de débogage annotée et stocke les points dans un fichier npy ; la fonction *traiter_video* fait de même sur une vidéo entière via le mode "VIDEO", produisant une vidéo annotée et un fichier npy ; enfin, la boucle principale parcourt le corpus et applique la fonction appropriée selon l'extension du fichier (.jpg, .jpeg, .png pour les images, .mp4 ou .mov pour les vidéos), et renvoie un message d'erreur pour toute autre extension.
