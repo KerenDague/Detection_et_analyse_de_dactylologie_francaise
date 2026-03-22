@@ -3,39 +3,24 @@
 ## Détail des scripts :
 
 ### Scripts pour l'interface :
-- [interface.py](https://github.com/KerenDague/Detection_et_analyse_de_dactylologie_francaise/blob/main/interface.py) : Ce script est celui qui nous a permis de créer et de modifier l'interface que vous visualisez actuellement.
-- [video_to_gif](https://github.com/KerenDague/Detection_et_analyse_de_dactylologie_francaise/blob/main/video_to_gif.py) : Ce script a permis de transformer les vidéos en gif en retirant l'arrière-plan de la vidéo et en mettant le bout de vidéo intéressant au format gif. Il prend en entrée des fichiers mp4 et sort des fichiers gif. Nous utilisons ces gifs dans la page de démonstration pour avoir un exemple pour chaque signe.
+- **index.html :** Ce script contient toute la partie HTML et CSS correspondant à l'interface web que vous êtes en train de visualiser. Il contient différentes fonctions permettant notamment d'afficher les fichiers markdown associés à chaque page explicative en les récupérant directement depuis le dépôt GitHub via un fetch, de naviguer entre les différentes pages (Accueil, Données, Scripts, Résultats, Démo, Documentation) sans rechargement, de gérer le flux caméra en direct via l'API MediaDevices du navigateur et d'envoyer les images capturées à l'API FastAPI pour obtenir une prédiction, d'afficher en temps réel la lettre prédite, le score de confiance, le top 3 des prédictions et les statistiques de session, ainsi que de parcourir les signes de référence de l'alphabet dactylologique filtrés par type (voyelles ou consonnes). Il inclut également un explorateur interactif de l'API permettant de tester les différents endpoints directement depuis l'interface.
+
+- **main.py :** Ce script constitue le serveur backend de l'application, développé avec FastAPI. Il définit la base de données des 26 lettres de la dactylologie française, chacune associée à son type (voyelle ou consonne), sa description gestuelle et son niveau de difficulté. Il expose plusieurs endpoints REST : un endpoint de statut vérifiant la disponibilité du serveur, un endpoint retournant la liste des lettres avec leurs métadonnées et l'URL de leur gif de référence hébergé sur GitHub, un endpoint retournant les détails d'une lettre spécifique, un endpoint de prédiction recevant une image encodée en base64 et retournant la lettre détectée avec son score de confiance et son top 3, et enfin deux endpoints de statistiques permettant de consulter et réinitialiser les compteurs de session.
+AJOUTER L'IMPLÉMENTATION DU MODÈLE RNN 
+Le serveur sert également directement le fichier index.html à la racine, ce qui permet de lancer l'application complète depuis un seul processus uvicorn.
+
+- **video_to_gif :** Ce script a permis de transformer les vidéos en gifs en retirant l'arrière-plan de la vidéo et en mettant le bout de vidéo intéressant au format gif. Il prend en entrée des fichiers mp4 et sort des fichiers gif. Ces gifs sont utilisés ensuite dans la page de démonstration afin de proposer à l'utilisateur un exemple de chaque signe pouvant être reconnu.
+
+- **interface_local.py :** Ce script est un fichier test d'interface local produit en amont afin que nous puissions visualiser un peu ce que nous voulions obtenir ensuite entermes d'interface.
 
 ### Scripts pour le traitement des données : 
-- [trier_corpus](https://github.com/KerenDague/Detection_et_analyse_de_dactylologie_francaise/blob/main/trier_corpus.py) : Ce script a permis de récupérer les images et de les ranger dans des sous-dossiers par lettre dans un dossier "corpus_lsf".
+- **run_all.sh :** Permet de lancer tous les scripts de traitement des données dans le bon ordre en une seule commande.
 
-- [mediapipe_extraction](https://github.com/KerenDague/Detection_et_analyse_de_dactylologie_francaise/blob/main/mediapipe_extraction.py) : Ce script utilise le module MediaPipe et le modèle [HandLandmarker](https://github.com/KerenDague/Detection_et_analyse_de_dactylologie_francaise/blob/main/hand_landmarker.task) pour extraire les gestes des vidéos. Il prend en entrée des vidéos (fichiers mp4 ou mov) et sort des fichiers npy et des vidéos (fichiers mp4) pour débuguer si besoin. Le modèle détermine 21 points à différents endroits de la main et les stocke sous forme de vecteurs dans des fichiers npy. Pour être sûres que les mains étaient bien captées et qu'aucun mouvement ne parasitait la compréhension, nous avons fait en sorte que le script enregistre les vidéos affichant les points détectés. Nous avons donc pu nous assurer que le modèle captait bien le mouvement des mains, et que les vecteurs dans les fichiers npy (par la suite transmis à notre modèle) étaient bien des points de la main. AJOUTER UN EXEMPLE DE VIDEO DE DEBUGAGE ?
-Le script contient les fonctions suivantes:
+- **trier_corpus:** Ce premier script permet de récupérer les images et de les ranger dans des sous-dossiers par lettre dans un dossier "corpus_lsf".
 
-    - traiter_image: cette fonction traite l'image, trouve des points sur la main avec mediapipe et crée une image de sortie (utilisée pour débuguer) sur laquelle elle ajoute les points trouvés. Elle stocke ensuite ces points dans un fichier npy. Pour traiter l'image, on utilise le running mode "IMAGE" de HandLandmarker.
-    
-    - traiter_video: cette fonction lit la vidéo, trouve des points sur la main avec mediapipe et crée une vidéo de sortie (utilisée pour débuguer) sur laquelle elle ajoute les points trouvés. Puis elle stocke les points dans un fichier npy. Pour traiter la vidéo, on utilise le running mode "VIDEO" de HandLandmarker.
-    
-    - boucle principale: cette boucle parcourt le corpus. Elle applique à chaque fichier la fonction traiter_image s'il a comme extension '.jpg', '.jpeg' ou '.png', et la fonction traiter_video s'il a comme extension '.mp4' ou '.mov'. Si l'extension du fichier trouvé ne figure pas parmi ces extensions, il un message d'erreur est renvoyé.
+- **mediapipe_extraction :** Ce script utilise le module MediaPipe et le modèle HandLandmarker pour extraire les gestes des vidéos. Il prend en entrée des vidéos (fichiers mp4 ou mov) et produit des fichiers npy ainsi que des vidéos de débogage (fichiers mp4). Le modèle détermine 21 points à différents endroits de la main et les stocke sous forme de vecteurs dans des fichiers npy. Pour s'assurer que les mains étaient bien captées et qu'aucun mouvement ne parasitait la compréhension, le script enregistre également les vidéos affichant les points détectés, ce qui a permis de vérifier que le modèle captait bien le mouvement des mains et que les vecteurs transmis au modèle correspondaient bien à des points de la main. Le script s'articule autour de deux fonctions principales et d'une boucle : la fonction *traiter_image* traite une image fixe, détecte les points de la main via le mode "IMAGE" de HandLandmarker, génère une image de débogage annotée et stocke les points dans un fichier npy ; la fonction *traiter_video* fait de même sur une vidéo entière via le mode "VIDEO", produisant une vidéo annotée et un fichier npy ; enfin, la boucle principale parcourt le corpus et applique la fonction appropriée selon l'extension du fichier (.jpg, .jpeg, .png pour les images, .mp4 ou .mov pour les vidéos), et renvoie un message d'erreur pour toute autre extension.
 
-- [longueur_sequence](https://github.com/KerenDague/Detection_et_analyse_de_dactylologie_francaise/blob/main/longueur_sequence.py) : Ce script parcourt les fichiers npy créés par le script mediapipe_extraction et calcule des statistiques sur chaque séquence. Il crée aussi un dataset PyTorch en tronquant/en faisant du padding sur les séquences pour qu'elles aient toutes la même longueur. Il prend en entrée le corpus prétraité (composé de fichiers npy)
-Il est séparé en deux parties:
-
-     - Analyse statistique des séquences: le script parcourt le corpus et effectue plusieurs opérations statistiques; il calcule la longueur moyenne des séquences, la longueur maximale, la longueur minimale, et le nombre de fichiers aberrants (pas de main détectée). Il renvoie un graphique des statistiques des longueurs, créé avec matplotlib.
-     
-     - Création du dataset: cette partie du script initialise la classe LSFDataset avec PyTorch, puis crée le dataset avec nos données en parcourant le corpus.
-Les nouveaux fichiers npy paddés sont ensuite ajoutés dans un nouveau dossier (corpus_pretraite_padded), et le dataset dans un fichier dataset_lsf.pt. 
+- **longueur_sequence** : Ce dernier script pour le traitement des données prend en entrée le corpus prétraité et se divise en deux parties : une analyse statistique qui calcule la longueur moyenne, maximale et minimale des séquences ainsi que le nombre de fichiers aberrants (aucune main détectée), et produit un graphique matplotlib des distributions ; et une création de dataset qui initialise la classe LSFDataset avec PyTorch, tronque ou padde les séquences pour qu'elles aient toutes la même longueur, puis sauvegarde les fichiers npy paddés dans un dossier "corpus_pretraite_padded" et le dataset dans un fichier "dataset_lsf.pt".
 
 ### Script pour l'analyse des données :
-- [rnn_models.py](https://github.com/KerenDague/Detection_et_analyse_de_dactylologie_francaise/blob/main/rnn_models.py) : Ce script contient le modèle (réseau de neurones LSTM créé avec torch), ainsi qu'un script de chargement des données, d'entraînement et de test du modèle. Il renvoie les résultats du modèle et une matrice de confusion.
-Il est composé de plusieurs parties:
-
-    - Initialisation du modèle LSFTranslator avec PyTorch
-    
-    - Fonction de chargement des données puis utilisation de cette fonction (load_data) pour charger les données du corpus depuis un dossier
-    
-    - Séparation du dataset en train et test. On utilise une séparation standard, 80% pour le train et 20% pour le test.
-    
-    - Fonctions d'entraînement et de test du modèle (train_model, test_model).
-    
-    - Entraînement et test du modèle puis affichage des résultats et d'une matrice de confusion.
+- **rnn_models.py :** Ce script contient essentiellement le modèle, ici un réseau de neurones LSTM créé avec torch. Il est composé de plusieurs parties: tout d'abord l'initialisation du modèle LSFTranslator avec PyTorch, ensuite une foonction de chargement des données *load_data* permettant de  charger les données du corpus depuis un dossier, puis la séparation du dataset en train et test en utilisant une séparation standard, 80% pour le train et 20% pour le test.En suite entre en jeu des fonctions d'entraînement et de test du modèle *train_model* et *test_model* en terminant par l'affichage des résultats et d'une matrice de confusion.
