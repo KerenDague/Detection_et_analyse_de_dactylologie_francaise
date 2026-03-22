@@ -13,6 +13,9 @@ Le serveur sert également directement le fichier index.html à la racine, ce qu
 
 - **interface_local.py :** Ce script est un fichier test d'interface local produit en amont afin que nous puissions visualiser un peu ce que nous voulions obtenir ensuite entermes d'interface.
 
+### Script pour l'augmentation de données :
+- **:** 
+
 ### Script pour l'exécution :
 - **run_all.sh :** Permet de lancer tous les scripts de traitement des données et le script d'analyse des données dans le bon ordre en une seule commande.
 
