@@ -1,15 +1,16 @@
 **Par :** Keren DAGUE, Inès MARTINS et Manon MOULIN
 
 ## Description du projet :
+### Sujet du projet :
 Nous avons fait le choix d'axer notre sujet sur la détection et la transcription de la dactylologie française. La dactylologie française est un ensemble de configurations manuelles relativement simples permettant de transcrire des lettres par le mouvement des mains. Considérée comme l'alphabet de la Langue des Signes Française (LSF) elle est utilisée pour épeller certaines entités nommées ou acronymes. Cependant elle est relativement peu utilisée par les personnes sourdes, étant donné que la LSF est une langue gestuelle et contextuelle qui implique peu l'utilisation de l'épellation en dehors d'un contexte d'apprentissage de la langue.  
 
 Dans le cadre de ce projet, nous avions pour ambition de départ de traiter la détection et l'analyse de signes de la LSF. Cependant, par soucis de manque de données, nous avons fait le choix de traiter uniquement les signes de la dactylologie et non ceux de la LSF. En effet, nous avons dû créer notre propre corpus et il était pour cela plus facile de demander à un public non-signant de reproduire des signes de la dactylologie (qui ne demandent que des mouvement manuels) plutôt que de vrais signes de LSF. En LSF, il existe de multiples variables contextuelles et des modifications parfois mêmes minimes de positionnement de la main, du buste et du visage qui sont très importantes dans l'utilisation et la compréhension de la LSF, mais difficilement perceptibles pour un public non habitué à identifier ces détails.
 
-## Objectif :
+### Objectif :
 Ce projet vise à développer un modèle d'apprentissage automatique capable de reconnaître les lettres de la dactylologie française à partir de vidéos des différents signes, puis de les traduire en français écrit.
 
-## Problématiques rencontrées :
+### Problématiques rencontrées :
 Au cours de ce projet nous avons été confrontées à plusieurs problématiques. Tout d'abord nous avons rencontré un soucis de manque de données et de manque de temps pour produire un corpus très large nécessaire à l'entraînement de notre modèle, certaines personne produisaient également des vidéos contenant des erreurs ce qui les rendaient inutilisables et nous avons donc dû les supprimer et enlever ainsi une certaine quantité de vidéos. Nous avons tenté de pallier à ce problème avec de l'augmentation de données. Ensuite certaines vidéos notamment celles du corpus 40brèves produisaient une erreur lors du positionnement des points mediapipe, problème auquel nous avons tenté de pallier autant que possible en rognant les vidéos problématiques ou en supprimant les vidéos jugées trop problématiques.
 
-## Perspectives d'amélioration :
+### Perspectives d'amélioration :
 En termes de perspectives d'amélioration, nous pouvons déjà envisager l'agrandissement du corpus, car pour ce projet nous étions dépendantes des vidéos envoyées par les participants et n'avons donc pas pu récolter suffisamment de données pour que les résultats soient très probants. De même, il pourrait être intéressant d'élargir notre corpus en y ajoutant quelques configurations manuelles (comme les chiffres et les nombres ou des signes de LSF simples comme "bonjour" ou "ça va") afin d'effectuer de nouveaux tests avec notre modèle. De plus, pour une meilleure robustesse, il pourrait être intéressant d'inclure différents angles de vue afin que la capacité de reconnaissance des signes du modèle soit bonne quel que soit l'angle.
