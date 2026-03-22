@@ -349,7 +349,7 @@ function showPage(id, btn) {
   btn.classList.add('active');
   if (id !== 'demo' && cameraActive) stopCamera();
   if (id === 'demo' && allLetters.length === 0) loadSigns();
-  const mdPages = ['accueil', 'donnees', 'scripts', 'resultats'];
+  const mdPages = ['accueil', 'donnees', 'scripts', 'resultats', 'documentation'];
   if (mdPages.includes(id) && !loaded[id]) {
     loaded[id] = true;
     loadMd(id);
