@@ -9,6 +9,9 @@ Dans le cadre de ce projet, nous avions pour ambition de départ de traiter la d
 ### Objectif :
 Ce projet vise à développer un modèle d'apprentissage automatique capable de reconnaître les lettres de la dactylologie française à partir de vidéos des différents signes, puis de les traduire en français écrit.
 
+### Répartition des tâches :
+
+
 ### Problématiques rencontrées :
 Au cours de ce projet nous avons été confrontées à plusieurs problématiques. Tout d'abord nous avons rencontré un soucis de manque de données et de manque de temps pour produire un corpus très large nécessaire à l'entraînement de notre modèle, certaines personne produisaient également des vidéos contenant des erreurs ce qui les rendaient inutilisables et nous avons donc dû les supprimer et enlever ainsi une certaine quantité de vidéos. Nous avons tenté de pallier à ce problème avec de l'augmentation de données. Ensuite certaines vidéos notamment celles du corpus 40brèves produisaient une erreur lors du positionnement des points mediapipe, problème auquel nous avons tenté de pallier autant que possible en rognant les vidéos problématiques ou en supprimant les vidéos jugées trop problématiques.
 
