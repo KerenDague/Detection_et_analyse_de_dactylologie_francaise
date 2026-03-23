@@ -14,7 +14,7 @@ Le serveur sert également directement le fichier index.html à la racine, ce qu
 - **interface_local.py :** Ce script est un fichier test d'interface local produit en amont afin que nous puissions visualiser un peu ce que nous voulions obtenir ensuite entermes d'interface.
 
 ### Script pour l'augmentation de données :
-- **:** 
+- **augmentation_donnes.py:** Ce script réalise l'augmentation des données vidéo du corpus en générant jusqu'à trois versions transformées pour chaque vidéo originale. Il s'appuie sur trois fonctions de transformation : un miroir horizontal, appliqué uniquement aux signes symétriques (la lettre Z en est exclue), une variation de luminosité aléatoire dont le facteur est fixé une seule fois par vidéo pour garantir la cohérence de la transformation sur l'ensemble des frames, et une rotation légère comprise entre -15° et +15° appliquée selon le même principe. La boucle principale parcourt le corpus, identifie les vidéos originales en excluant celles déjà augmentées grâce à leurs suffixes (_miroir, _luminosite, _rotation), puis applique les transformations appropriées et sauvegarde les nouvelles vidéos dans le même dossier que les originales.
 
 ### Script pour l'exécution :
 - **run_all.sh :** Permet de lancer tous les scripts de traitement des données et le script d'analyse des données dans le bon ordre en une seule commande.
