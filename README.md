@@ -6,9 +6,9 @@ Ce projet vise à développer un modèle d'apprentissage automatique capable de 
 
 ## 🗃️ Données
 
-**Nous avons construit notre corpus**
+**Nous avons construit notre corpus aussi les doonées ne sont elles pas exposées sur ce dépôt**
 
 Le corpus contient :
-- Des images en couleurs
-- Des images en noir et blanc
-- Des vidéos 
+- Des vidéos originales 
+- Des vidéos issues de corpus préexistants
+- Des vidéos produites pas augmentation de données 
