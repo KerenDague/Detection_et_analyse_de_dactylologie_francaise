@@ -1,7 +1,7 @@
 """
 FastAPI + ASGI (Uvicorn)
 
-Sert à la fois l'interface utilisateur (index.html) et une API REST
+Sert à la fois l'interface utilisateur (interface_web.html) et une API REST
 
 Installation : 
     pip install fastapi uvicorn opencv-python numpy
@@ -157,10 +157,10 @@ def run_inference(frame: np.ndarray) -> dict:
 # Routes
 @app.get("/", response_class=HTMLResponse, include_in_schema=False)
 def serve_root():
-    """Lance index.html (doit etre dans le meme dossier."""
-    html_path = Path(__file__).parent / "index.html"
+    """Lance interface_web.html (doit etre dans le meme dossier."""
+    html_path = Path(__file__).parent / "interface_web.html"
     if not html_path.exists():
-        raise HTTPException(status_code=404, detail="index.html introuvable.")
+        raise HTTPException(status_code=404, detail="interface_web.html introuvable.")
     return HTMLResponse(content=html_path.read_text(encoding="utf-8"))
 
 
@@ -192,7 +192,7 @@ def get_letters(type: Optional[str] = None):
         result.append({
             "letter": letter,
             **info,
-            "gif_url": f"https://raw.githubusercontent.com/KerenDague/Detection_et_analyse_de_dactylologie_francaise/main/GIF/{letter.lower()}.gif",
+            "gif_url": f"https://raw.githubusercontent.com/KerenDague/Detection_et_analyse_de_dactylologie_francaise/main/Interface/GIF/{letter.lower()}.gif",
         })
     return {"count": len(result), "letters": result}
 
