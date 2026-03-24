@@ -6,6 +6,8 @@ source /chemin
 # Lance les scripts Python 
 python trier_corpus.py
 wait
+python augmentation_donnees.py
+wait
 python mediapipe_extraction.py
 wait
 python longueur_sequence.py
