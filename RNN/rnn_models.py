@@ -191,7 +191,7 @@ def test_model(model, test_loader, criterion):
 def plot_confusion_matrix(y_true, y_pred, classes):
     cm = confusion_matrix(y_true, y_pred)
     plt.figure(figsize=(12, 10))
-    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
+    sns.heatmap(cm, annot=True, fmt='d', cmap='RdPu',
                 xticklabels=classes, yticklabels=classes)
     plt.title('Matrice de confusion')
     plt.xlabel('Prédit')
