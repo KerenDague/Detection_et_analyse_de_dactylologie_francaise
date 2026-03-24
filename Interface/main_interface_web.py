@@ -22,6 +22,9 @@ from pathlib import Path
 from typing import Optional
 
 import cv2
+import torch
+import torch.nn as nn
+import mediapipe as mp
 import numpy as np
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -44,6 +47,50 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Chargement du modèle
+
+LETTERS = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
+
+MAX_FRAMES = 150
+INPUT_SIZE = 63
+
+class LSFTranslator(nn.Module):
+    def __init__(self, input_size=63, hidden_size=256, num_classes=26):
+        super().__init__()
+        self.lstm = nn.LSTM(input_size=input_size, hidden_size=hidden_size,
+                            batch_first=True, num_layers=2,
+                            dropout=0.3, bidirectional=True)
+        self.dropout = nn.Dropout(0.4)
+        self.classifier = nn.Sequential(
+            nn.Linear(hidden_size * 2, 128), nn.ReLU(),
+            nn.Dropout(0.3), nn.Linear(128, num_classes),
+        )
+    def forward(self, x):
+        out, _ = self.lstm(x)
+        return self.classifier(self.dropout(out.mean(dim=1)))
+
+# Charge le modele sauvegardé
+MODEL_PATH = Path(__file__).parent / "lsf_model.pt"
+model = None
+X_mean = None
+X_std = None
+
+if MODEL_PATH.exists():
+    checkpoint = torch.load(str(MODEL_PATH), map_location="cpu")
+    model= LSFTranslator()
+    model.load_state_dict(checkpoint["model_state_dict"])
+    model.eval()
+    X_mean = checkpoint["X_mean"]
+    X_std = checkpoint["X_std"]
+    print("Modèle chargé.")
+else:
+    print("lsf_model.pt introuvable")
+
+# MediaPipe Hands
+mp_hands = mp.solutions.hands
+hands = mp_hands.Hands(static_image_mode=True, max_num_hands=1, min_detection_confidence=0.5)
+mp_drawing = mp.solutions.drawing_utils
+mp_drawing_styles = mp.solutions.drawing_styles
 
 # Données
 LETTERS_DB = {
@@ -106,6 +153,10 @@ class ApiStatus(BaseModel):
     letters_supported: int
     uptime_seconds: float
 
+class PreviewResult(BaseModel):
+    image: str
+    hand_detected: bool
+
 
 # Inférence
 def decode_image(b64: str) -> np.ndarray:
@@ -123,36 +174,47 @@ def decode_image(b64: str) -> np.ndarray:
 
 def run_inference(frame: np.ndarray) -> dict:
     """
-    Metter notre modèle ici
-    Retourne : {"letter": str, "confidence": float, "top3": list[dict]}
+    Extrait les landmarks MediaPipe de la frame et prédit la lettre
+    avec le modèle LSTM.
     """
-    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-    h, w = frame.shape[:2]
-    mask = cv2.inRange(hsv, np.array([0, 20, 70], np.uint8), np.array([20, 255, 255], np.uint8))
-    skin_ratio = mask.sum() / (255 * h * w)
-    contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    area = max((cv2.contourArea(c) for c in contours), default=0) / (h * w)
 
-    rng = random.Random(int(skin_ratio * 1000 + area * 500) % (2 ** 31))
-    letters = list(LETTERS_DB.keys())
-    rng.shuffle(letters)
-    base = rng.uniform(0.5, 0.95)
-    scores = {
-        letters[0]: round(base, 3),
-        letters[1]: round(base * rng.uniform(0.3, 0.7), 3),
-        letters[2]: round(base * rng.uniform(0.05, 0.3), 3),
-    }
-    for l in letters[3:]:
-        scores[l] = round(rng.uniform(0.001, 0.05), 3)
-    total = sum(scores.values())
-    scores = {k: round(v / total, 4) for k, v in scores.items()}
-    s = sorted(scores.items(), key=lambda x: -x[1])
+    # Extraction des landmarks MediaPipe
+    if model is not None:
+        rgb     = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        results = hands.process(rgb)
+
+        if results.multi_hand_landmarks:
+            hand = results.multi_hand_landmarks[0]
+            landmarks = np.array(
+                [[lm.x, lm.y, lm.z] for lm in hand.landmark],
+                dtype=np.float32
+            ).flatten()
+
+            # Accumulation de frames dans un buffer par requete
+            sequence = np.tile(landmarks, (MAX_FRAMES, 1))  # (150, 63)
+
+            # Normalisation
+            x = torch.FloatTensor(sequence).unsqueeze(0)    # (1, 150, 63)
+            x = (x - X_mean) / X_std
+
+            # Prédiction
+            with torch.no_grad():
+                logits = model(x)
+                probs  = torch.softmax(logits, dim=1)[0]
+
+            top3_idx = probs.topk(3).indices.tolist()
+            return {
+                "letter":     LETTERS[top3_idx[0]],
+                "confidence": round(probs[top3_idx[0]].item(), 4),
+                "top3": [{"letter": LETTERS[i], "confidence": round(probs[i].item(), 4)} for i in top3_idx],
+            }
+
+    # Aucune main détectée ou modèle absent
     return {
-        "letter": s[0][0],
-        "confidence": s[0][1],
-        "top3": [{"letter": l, "confidence": c} for l, c in s[:3]],
+        "letter": "?",
+        "confidence": 0.0,
+        "top3": [{"letter": "?", "confidence": 0.0}] * 3,
     }
-
 
 # Routes
 @app.get("/", response_class=HTMLResponse, include_in_schema=False)
@@ -218,6 +280,30 @@ def predict(payload: ImagePayload):
         session_stats["high_confidence_count"] += 1
     return PredictionResult(processing_time_ms=elapsed, **result)
 
+@app.post("/preview", response_model=PreviewResult, summary="Frame annotée avec landmarks")
+def preview(payload: ImagePayload):
+    frame = decode_image(payload.image)
+    rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    results = hands.process(rgb)
+    hand_detected = False
+
+    if results.multi_hand_landmarks:
+        hand_detected = True
+        for hand_landmarks in results.multi_hand_landmarks:
+            mp_drawing.draw_landmarks(
+                frame,
+                hand_landmarks,
+                mp_hands.HAND_CONNECTIONS,
+                mp_drawing_styles.get_default_hand_landmarks_style(),
+                mp_drawing_styles.get_default_hand_connections_style(),
+            )
+
+    _, buffer = cv2.imencode('.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, 80])
+    b64 = base64.b64encode(buffer).decode('utf-8')
+    return PreviewResult(
+        image=f"data:image/jpeg;base64,{b64}",
+        hand_detected=hand_detected,
+    )
 
 @app.get("/stats", summary="Statistiques de session")
 def get_stats():
