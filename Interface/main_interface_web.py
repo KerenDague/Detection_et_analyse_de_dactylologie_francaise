@@ -3,10 +3,10 @@ FastAPI + ASGI (Uvicorn)
 
 Sert à la fois l'interface utilisateur (interface_web.html) et une API REST
 
-Installation : 
+Installation :
     pip install fastapi uvicorn opencv-python numpy
 Lancement :
-    uvicorn main:app --reload --host 0.0.0.0 --port 8000
+    uvicorn main_interface_web:app --reload --host 0.0.0.0 --port 8000
 
 Puis ouvrir  →  http://localhost:8000
 Swagger UI   →  http://localhost:8000/docs
@@ -25,6 +25,8 @@ import cv2
 import torch
 import torch.nn as nn
 import mediapipe as mp
+from mediapipe.tasks import python
+from mediapipe.tasks.python import vision
 import numpy as np
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -46,6 +48,15 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+MODEL_ASSET_PATH = 'hand_landmarker.task'
+base_options = python.BaseOptions(model_asset_path=MODEL_ASSET_PATH)
+options_image = vision.HandLandmarkerOptions(
+    base_options=base_options,
+    running_mode=vision.RunningMode.IMAGE,
+    num_hands=1,
+)
+landmarker = vision.HandLandmarker.create_from_options(options_image)
 
 # Chargement du modèle
 
@@ -69,6 +80,9 @@ class LSFTranslator(nn.Module):
         out, _ = self.lstm(x)
         return self.classifier(self.dropout(out.mean(dim=1)))
 
+
+app = FastAPI(title="API LSF - HandLandmarker")
+
 # Charge le modele sauvegardé
 MODEL_PATH = Path(__file__).parent / "lsf_model.pt"
 model = None
@@ -85,12 +99,6 @@ if MODEL_PATH.exists():
     print("Modèle chargé.")
 else:
     print("lsf_model.pt introuvable")
-
-# MediaPipe Hands
-mp_hands = mp.solutions.hands
-hands = mp_hands.Hands(static_image_mode=True, max_num_hands=1, min_detection_confidence=0.5)
-mp_drawing = mp.solutions.drawing_utils
-mp_drawing_styles = mp.solutions.drawing_styles
 
 # Données
 LETTERS_DB = {
@@ -164,7 +172,7 @@ def decode_image(b64: str) -> np.ndarray:
         b64 = b64.split(",", 1)[1]
     try:
         arr = np.frombuffer(base64.b64decode(b64), dtype=np.uint8)
-        frame = cv2.imdecode(arr, cv2.IMREAD_COLOR)
+        return cv2.imdecode(arr, cv2.IMREAD_COLOR)
         if frame is None:
             raise ValueError("Décodage impossible.")
         return frame
@@ -179,19 +187,23 @@ def run_inference(frame: np.ndarray) -> dict:
     """
 
     # Extraction des landmarks MediaPipe
-    if model is not None:
-        rgb     = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        results = hands.process(rgb)
 
-        if results.multi_hand_landmarks:
-            hand = results.multi_hand_landmarks[0]
-            landmarks = np.array(
-                [[lm.x, lm.y, lm.z] for lm in hand.landmark],
-                dtype=np.float32
-            ).flatten()
+    if model is not None:
+        frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=frame_rgb)
+
+        result = landmarker.detect(mp_image)
+
+        if result.hand_landmarks:
+            hand_landmarks = result.hand_landmarks[0]
+            landmarks = []
+            for lm in hand_landmarks:
+                landmarks.extend([lm.x, lm.y, lm.z])
+
+            landmarks_array = np.array(landmarks, dtype=np.float32)
 
             # Accumulation de frames dans un buffer par requete
-            sequence = np.tile(landmarks, (MAX_FRAMES, 1))  # (150, 63)
+            sequence = np.tile(landmarks_array, (MAX_FRAMES, 1))  # (150, 63)
 
             # Normalisation
             x = torch.FloatTensor(sequence).unsqueeze(0)    # (1, 150, 63)
@@ -204,10 +216,10 @@ def run_inference(frame: np.ndarray) -> dict:
 
             top3_idx = probs.topk(3).indices.tolist()
             return {
-                "letter":     LETTERS[top3_idx[0]],
-                "confidence": round(probs[top3_idx[0]].item(), 4),
-                "top3": [{"letter": LETTERS[i], "confidence": round(probs[i].item(), 4)} for i in top3_idx],
-            }
+    "letter": LETTERS[top3_idx[0]],
+    "confidence": round(probs[top3_idx[0]].item(), 4),
+    "top3": [{"letter": LETTERS[i], "confidence": round(probs[i].item(), 4)} for i in top3_idx],
+}
 
     # Aucune main détectée ou modèle absent
     return {
@@ -219,7 +231,7 @@ def run_inference(frame: np.ndarray) -> dict:
 # Routes
 @app.get("/", response_class=HTMLResponse, include_in_schema=False)
 def serve_root():
-    """Lance interface_web.html (doit etre dans le meme dossier."""
+    """Lance interface_web.html (doit etre dans le meme dossier)."""
     html_path = Path(__file__).parent / "interface_web.html"
     if not html_path.exists():
         raise HTTPException(status_code=404, detail="interface_web.html introuvable.")
@@ -241,7 +253,7 @@ def status():
     )
 
 
-@app.get("/letters", summary="Liste des lettres reconnues")
+@app.get("/letters/", summary="Liste des lettres reconnues")
 def get_letters(type: Optional[str] = None):
     """
     Retourne toutes les lettres avec leurs métadonnées.
@@ -280,30 +292,27 @@ def predict(payload: ImagePayload):
         session_stats["high_confidence_count"] += 1
     return PredictionResult(processing_time_ms=elapsed, **result)
 
-@app.post("/preview", response_model=PreviewResult, summary="Frame annotée avec landmarks")
+@app.post("/preview")
 def preview(payload: ImagePayload):
     frame = decode_image(payload.image)
-    rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-    results = hands.process(rgb)
+    frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=frame_rgb)
+
+    result = landmarker.detect(mp_image)
     hand_detected = False
 
-    if results.multi_hand_landmarks:
+    if result.hand_landmarks:
         hand_detected = True
-        for hand_landmarks in results.multi_hand_landmarks:
-            mp_drawing.draw_landmarks(
-                frame,
-                hand_landmarks,
-                mp_hands.HAND_CONNECTIONS,
-                mp_drawing_styles.get_default_hand_landmarks_style(),
-                mp_drawing_styles.get_default_hand_connections_style(),
-            )
+        h, w, _ = frame.shape
+        # Dessin manuel (plus flexible avec la nouvelle API)
+        for hand_landmarks in result.hand_landmarks:
+            for lm in hand_landmarks:
+                cx, cy = int(lm.x * w), int(lm.y * h)
+                cv2.circle(frame, (cx, cy), 3, (0, 255, 0), -1)
 
-    _, buffer = cv2.imencode('.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, 80])
+    _, buffer = cv2.imencode('.jpg', frame)
     b64 = base64.b64encode(buffer).decode('utf-8')
-    return PreviewResult(
-        image=f"data:image/jpeg;base64,{b64}",
-        hand_detected=hand_detected,
-    )
+    return {"image": f"data:image/jpeg;base64,{b64}", "hand_detected": hand_detected}
 
 @app.get("/stats", summary="Statistiques de session")
 def get_stats():
