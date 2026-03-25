@@ -26,32 +26,58 @@
   --api-base:  http://localhost:8000;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-
 body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;display:flex;flex-direction:column}
-
-/*Header */
+/* Header */
 header{padding:24px 40px 0;text-align:center}
 header h1{font-family:'Playfair Display',serif;font-size:clamp(1.3rem,2.5vw,1.9rem);color:var(--accent);letter-spacing:-.5px}
 .api-badge{display:inline-flex;align-items:center;gap:6px;margin-top:8px;font-size:11px;color:var(--muted);font-weight:500;letter-spacing:.4px}
 .dot{width:7px;height:7px;border-radius:50%;background:var(--border);flex-shrink:0;transition:background .3s}
 .dot.ok{background:var(--success)}
 .dot.err{background:var(--danger)}
-
 /* Nav */
-nav{display:flex;border:1px solid var(--border);margin:14px 0 0}
-nav button{flex:1;height:48px;background:var(--card);border:none;border-right:1px solid var(--border);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:var(--text);cursor:pointer;transition:background .15s}
+nav{display: flex;margin: 14px 0 0;border: none; gap: 4px;}
+nav button{flex:1;height:48px;background:var(--card);border:none;border-right:1px solid var(--border);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:var(--text);cursor:pointer;transition:background .15s; border-radius: 8px;margin: 0 2px;}
 nav button:last-child{border-right:none}
 nav button:hover{background:var(--hover)}
 nav button.active{background:var(--accent);color:var(--bg)}
-
-/*Pages */
+/* Pages */
 main{flex:1;display:flex;flex-direction:column}
-.page{display:none;flex:1;padding:32px 40px;animation:fadein .2s ease}
-.page.active{display:block}
+.page { display: none !important; flex: 1; padding: 20px 0; animation: fadein .2s ease }
+.page.active { display: block !important; }
+#page-accueil.active { display: flex !important; flex-direction: column; padding: 20px 0;overflow: hidden; }
 @keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-
-/*Simple pages */
+/* Simple pages */
 .simple-page h2{font-family:'Playfair Display',serif;font-size:1.8rem;text-align:center;margin-bottom:24px}
+/* Page d'acceuil*/
+.welcome-container { display: flex; flex-direction: column; flex: 1; min-height: 0; overflow: hidden; width: 100%; max-width: 100%; padding: 0 30px; box-sizing: border-box; }
+.welcome-header { text-align: center; margin-bottom: 24px; flex-shrink: 0; }
+.welcome-header h2 { font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--accent); margin-bottom: 12px; }
+.authors { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; font-size: 14px; color: var(--muted); }
+.author-name strong { color: var(--accent); font-weight: 700; }
+.welcome-content { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; flex: 1; margin: 0; min-height: 0; }
+.content-left,
+.content-right { display: flex; flex-direction: column; min-height: 0; }
+.description-card,
+.tasks-distribution { flex: 1; min-height: 0; padding: 28px 30px; box-sizing: border-box; border-radius: 12px; background: var(--card); border: 1px solid var(--border); overflow-y: auto; }
+.description-title { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--accent); text-align: center; margin-bottom: 20px; }
+.description-section { margin-bottom: 16px; }
+.description-section h4 { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--accent2); margin-bottom: 10px; }
+.project-note { background: rgba(139, 34, 64, 0.05); border-left: 3px solid var(--accent); padding: 12px; margin: 12px 0; border-radius: 4px; font-size: 14px; }
+.objective { font-weight: 500; text-align: center; color: var(--text); }
+.tasks-title { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--accent); text-align: center; margin-bottom: 16px; }
+.tasks-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+.tasks-table thead tr { background: var(--accent); color: var(--bg); }
+.tasks-table thead th { padding: 12px 16px; text-align: left; font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 12px; letter-spacing: .6px; text-transform: uppercase; }
+.tasks-table thead th:first-child { border-radius: 8px 0 0 0; }
+.tasks-table thead th:last-child  { border-radius: 0 8px 0 0; }
+.tasks-table tbody tr { border-bottom: 1px solid var(--border); transition: background .15s; }
+.tasks-table tbody tr:hover { background: var(--hover); }
+.tasks-table .category-row td { background: rgba(139, 34, 64, 0.08); color: var(--accent); font-family: 'Playfair Display', serif; font-weight: 700; font-size: 14px; padding: 10px 16px; letter-spacing: .3px; border-left: 3px solid var(--accent); }
+.tasks-table tbody td { padding: 9px 16px; color: var(--text); vertical-align: middle; }
+.tasks-table tbody td:nth-child(2) { font-family: 'Courier New', monospace; font-size: 12.5px; color: var(--accent2); }
+.tasks-table tbody tr:last-child { border-bottom: none; }
+@media (max-width: 992px) { .welcome-content { grid-template-columns: 1fr; gap: 16px; } }
+/* Page données */
 .md-box{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:28px 32px;color:var(--muted);font-size:14px;line-height:1.8;max-width:800px;margin:0 auto}
 .md-box h1,.md-box h2,.md-box h3{font-family:'Playfair Display',serif;color:var(--text);margin:1em 0 .4em}
 .md-box p{margin-bottom:.9em}
@@ -59,30 +85,63 @@ main{flex:1;display:flex;flex-direction:column}
 .md-box a{color:var(--accent)}
 .md-box code{background:var(--hover);padding:2px 6px;border-radius:4px;font-size:12px}
 .spinner{display:inline-block;width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;margin-right:8px;vertical-align:middle}
-@keyframes spin{to{transform:rotate(360deg)}}
-
-/*Demo page*/
+/* Page scripts*/
+#page-scripts.active { display: block; }
+#page-scripts { padding: 32px 40px; }
+.scripts-header { text-align: center; margin-bottom: 32px; }
+.scripts-header h2 { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--accent); margin-bottom: 6px; }
+.scripts-header p { font-size: 13px; color: var(--muted); }
+.scripts-section { max-width: 1000px; margin: 0 auto 40px; }
+.section-label { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.section-label-title { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 700; color: var(--text); }
+.section-label-count { font-size: 11px; font-weight: 600; color: var(--accent); background: rgba(139,34,64,.1); border: 1px solid rgba(139,34,64,.2); padding: 2px 10px; border-radius: 999px; }
+.section-label-line { flex: 1; height: 1px; background: linear-gradient(90deg, var(--border), transparent); }
+.scripts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+.script-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px 22px 18px; display: flex; flex-direction: column; gap: 10px; position: relative; overflow: hidden; transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease; animation: fadein .4s ease both; }
+.script-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--accent); opacity: 0; transition: opacity .2s; }
+.script-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(139,34,64,.1); border-color: rgba(139,34,64,.35); }
+.script-card:hover::before { opacity: 1; }
+.script-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.script-card-name { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; color: var(--text); word-break: break-all; }
+.script-card-ext { font-size: 11px; font-weight: 600; color: var(--accent); background: rgba(139,34,64,.08); border: 1px solid rgba(139,34,64,.2); padding: 2px 8px; border-radius: 6px; white-space: nowrap; flex-shrink: 0; }
+.script-card-desc { font-size: 12.5px; color: var(--muted); line-height: 1.75; font-weight: 400; flex: 1; }
+/*Page difficultés*/
+#page-difficultes.active { display: block; }
+#page-difficultes { padding: 32px 40px; }
+.diff-wrap { max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+.diff-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px 28px; display: grid; grid-template-columns: auto 1fr; gap: 0 20px; position: relative; overflow: hidden; transition: transform .2s ease, box-shadow .2s ease; }
+.diff-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(139,34,64,.08); }
+.diff-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--accent); border-radius: 12px 0 0 12px; }
+.diff-card.resolved::before { background: var(--success); }
+.diff-card.partial::before  { background: var(--accent3); }
+.diff-icon { font-size: 1.6rem; line-height: 1; padding-top: 2px; grid-row: span 2; align-self: start; }
+.diff-top { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.diff-title { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; color: var(--text); }
+.diff-badge { font-size: 10px; font-weight: 600; padding: 3px 9px; border-radius: 99px; background: rgba(139,34,64,.1); color: var(--accent); border: 1px solid rgba(139,34,64,.2); white-space: nowrap; }
+.diff-badge.resolved { background: rgba(96,112,64,.1); color: var(--success); border-color: rgba(96,112,64,.2); }
+.diff-badge.partial { background: rgba(120,136,184,.1); color: var(--accent3); border-color: rgba(120,136,184,.2); }
+.diff-body { font-size: 13.5px; color: var(--muted); line-height: 1.7; }
+.diff-body strong { color: var(--text); font-weight: 600; }
+.diff-body code { background: var(--hover); padding: 1px 6px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: 12px; color: var(--accent2); }
+.diff-solution { margin-top: 12px; padding: 10px 14px; background: var(--hover); border-radius: 8px; font-size: 13px; color: var(--text); border-left: 3px solid var(--accent3); }
+.diff-solution-label { font-size: 11px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; color: var(--accent3); margin-bottom: 4px; }
+.diff-section-head { display: flex; align-items: center; gap: 12px; margin-top: 8px; }
+.diff-section-title { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 700; color: var(--text); white-space: nowrap; }
+.diff-section-line { flex: 1; height: 1px; background: linear-gradient(90deg, var(--border), transparent); }
+/* Page démo */
 #page-demo.active{display:block;padding:24px 28px;}
 .demo-columns {display: flex;gap: 20px;align-items: flex-start;}
 .demo-left{flex:1px;display:flex;flex-direction:column;gap:14px;}
 .demo-right{flex:1px;display:flex;flex-direction:column;gap:14px}
 .demo-signs{flex:1;display:flex;flex-direction:column;gap:12px;min-width:0}
 .page-title {text-align: center;font-family: 'Playfair Display', serif;font-size: 1.8rem;margin-bottom: 20px;width: 100%;}
-
 .col-title{font-family:'Playfair Display',serif;font-size:1.15rem;color:var(--text);text-align:center;}
-
 /* Camera */
 #cam-wrap{width:480px;height:360px;background:var(--card);border:2px solid var(--border);border-radius:12px;overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center;margin: 0 auto}
 #cam-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;transform:scaleX(-1)}
 .cam-placeholder{display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--muted);font-size:13px;z-index:1}
 .cam-icon{font-size:2.6rem}
-/* canvas overlay for inference — landmarks MediaPipe */
-#cam-canvas{
-  position:absolute;inset:0;width:100%;height:100%;
-  display:none;transform:scaleX(-1);pointer-events:none;
-  border-radius:10px;
-}
-
+#cam-canvas{position:absolute;inset:0;width:100%;height:100%;display:none;transform:scaleX(-1);pointer-events:none;border-radius:10px;}
 /* Buttons */
 .btn{height:42px;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s;padding:0 20px}
 .btn-accent{background:var(--accent);color:var(--bg)}
@@ -91,13 +150,11 @@ main{flex:1;display:flex;flex-direction:column}
 .btn-stop:hover{background:#e05555}
 .btn-ghost{background:var(--card);border:1px solid var(--border);color:var(--text)}
 .btn-ghost:hover{background:var(--hover)}
-
 /* Card */
 .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 22px}
 .card-title{font-weight:700;font-size:12px;letter-spacing:.5px;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
 .tip{font-size:13px;color:var(--muted);margin-bottom:4px;padding-left:12px;position:relative}
 .tip::before{content:"–";position:absolute;left:0;color:var(--border)}
-
 /* Prediction */
 .pred-card{background:var(--card);border:1px solid var(--border);border-radius:12px;height:auto;aspect-ratio: 1/1;width: 100%;max-width: 240px;margin: 0 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative}
 #pred-letter{font-family:'Playfair Display',serif;font-size:96px;font-weight:900;color:var(--accent);line-height:1;transition:all .2s}
@@ -105,12 +162,10 @@ main{flex:1;display:flex;flex-direction:column}
 @keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.08)}100%{transform:scale(1)}}
 #pred-info{font-size:12px;color:var(--muted);margin-top:2px}
 #pred-type{position:absolute;top:14px;right:16px;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:var(--hover);color:var(--muted)}
-
 /* Confidence */
 .conf-track{width:100%;height:8px;background:var(--bg);border-radius:9px;overflow:hidden;margin:6px 0 4px}
 #conf-fill{height:100%;width:0%;border-radius:9px;transition:width .3s,background .3s;background:var(--accent)}
 #conf-pct{font-size:12px;color:var(--accent);font-weight:600}
-
 /* Top-3 */
 .top3-row{display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid var(--border)}
 .top3-row:last-child{border-bottom:none}
@@ -118,17 +173,13 @@ main{flex:1;display:flex;flex-direction:column}
 .top3-bar-wrap{flex:1;height:5px;background:var(--bg);border-radius:3px;overflow:hidden}
 .top3-bar{height:100%;border-radius:3px;background:var(--accent);transition:width .3s}
 .top3-pct{font-size:11px;color:var(--muted);width:36px;text-align:right}
-
 /* Stats row */
 .stat-grid{display:flex;gap:12px;flex-wrap:wrap}
 .stat-box{flex:1;min-width:100px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;text-align:center}
 .stat-val{font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--accent);line-height:1}
 .stat-lbl{font-size:11px;color:var(--muted);margin-top:3px}
-
-/* processing time */
 #proc-time{font-size:11px;color:var(--border);text-align:right;margin-top:4px}
-
-/* Panneau signes latéral */
+/* Signs panel */
 .signs-panel{background:var(--card);border:1px solid var(--border);border-radius:12px;display:flex;flex-direction:column;overflow:hidden;height:calc(100vh - 160px);min-height:500px}
 .signs-panel-hd{padding:12px 14px;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:8px;flex-shrink:0}
 .signs-panel-title{font-family:'Playfair Display',serif;font-size:1rem;color:var(--text)}
@@ -144,8 +195,7 @@ main{flex:1;display:flex;flex-direction:column}
 .st-gif img{width:100%;height:100%;object-fit:contain}
 .st-ph{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;color:var(--accent)}
 .st-label{padding:4px 6px;font-size:11px;font-weight:600;color:var(--text);text-align:center}
-
-/* Carte signe actif (GIF agrandi + description) */
+/* Active sign card */
 .active-sign-card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;display:none}
 .active-sign-card.show{display:flex;flex-direction:column}
 .asc-gif{width:100%;aspect-ratio:4/3;background:var(--hover);display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
@@ -155,11 +205,40 @@ main{flex:1;display:flex;flex-direction:column}
 .asc-info{padding:12px 14px}
 .asc-title{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--accent)}
 .asc-desc{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.55}
-
 /* Scrollbar */
 ::-webkit-scrollbar{width:5px}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
 ::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+/* Données*/
+.dn-wrap { display: flex; flex-direction: column; gap: 32px; max-width: 900px; margin: 0 auto; }
+.dn-section { display: flex; flex-direction: column; gap: 16px; }
+.dn-section-head { display: flex; align-items: center; gap: 12px; }
+.dn-section-title { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 700; color: var(--text); }
+.dn-section-line { flex: 1; height: 1px; background: linear-gradient(90deg, var(--border), transparent); }
+.dn-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; }
+.dn-chips { display: flex; flex-direction: column; gap: 8px; margin: 12px 0; }
+.dn-chip { display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; font-size: 13px; color: var(--text); }
+.dn-chip-dot { display: block; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+.dn-chip-dot.blue { background: var(--accent3); }
+.dn-naming { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-top: 16px; }
+.dn-naming-label { font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 6px; }
+.dn-naming-code { font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; color: var(--accent); background: var(--hover); padding: 8px 12px; border-radius: 6px; display: inline-block; margin-bottom: 8px; }
+.dn-naming-note { font-size: 12px; color: var(--muted); }
+.dn-rgpd { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; }
+.dn-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+.dn-mini { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+.dn-mini-title { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; color: var(--text); margin-bottom: 12px; }
+.dn-tag { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; margin-top: 12px; }
+.dn-tag-cc { background: rgba(120, 136, 184, 0.1); color: var(--accent3); border: 1px solid rgba(120, 136, 184, 0.2); }
+.dn-tag-priv { background: rgba(139, 34, 64, 0.1); color: var(--accent); border: 1px solid rgba(139, 34, 64, 0.2); }
+.dn-drive { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; text-align: center; }
+.dn-drive-btn { display: inline-flex; align-items: center; gap: 8px; margin-top: 16px; padding: 10px 20px; background: var(--accent); color: var(--bg); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600; text-decoration: none; transition: background 0.2s; }
+.dn-drive-btn:hover { background: #a02850; }
+.dn-augmentation-schema { display: flex; align-items: center; justify-content: center; gap: 20px; margin: 20px 0; padding: 16px; background: var(--bg); border: 1px solid var(--border); border-radius: 12px; }
+.dn-schema-before, .dn-schema-after { text-align: center; flex: 1; }
+.dn-schema-number { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 900; color: var(--accent); margin-bottom: 4px; }
+.dn-schema-label { font-size: 12px; color: var(--muted); }
+.dn-schema-arrow { font-size: 1.8rem; color: var(--accent3); font-weight: bold; transform: scaleX(1.2); }
 </style>
 </head>
 <body>
@@ -176,6 +255,7 @@ main{flex:1;display:flex;flex-direction:column}
   <button class="active" onclick="showPage('accueil',this)">Accueil</button>
   <button onclick="showPage('donnees',this)">Données</button>
   <button onclick="showPage('scripts',this)">Scripts</button>
+  <button onclick="showPage('difficultes',this)">Difficultés</button>
   <button onclick="showPage('resultats',this)">Résultats</button>
   <button onclick="showPage('demo',this)">Démo</button>
   <button onclick="showPage('documentation',this)">Documentation</button>
@@ -183,35 +263,422 @@ main{flex:1;display:flex;flex-direction:column}
 
 <main>
 
-<!--Accueil-->
+<!-- Acceuil -->
 <div id="page-accueil" class="page simple-page active">
-  <h2>Accueil</h2>
-  <div class="md-box" id="md-accueil"><span class="spinner"></span>Chargement…</div>
+  <div class="welcome-container">
+    <div class="welcome-header">
+      <h2>Accueil</h2>
+      <div class="authors">
+        <span class="author-label">Par :</span>
+        <span class="author-name">Keren DAGUE,</span>
+        <span class="author-name">Inès MARTINS,</span>
+        <span class="author-name">Manon MOULIN</span>
+      </div>
+    </div>
+
+    <div class="welcome-content">
+      <div class="content-left">
+        <div class="description-card">
+          <h3 class="description-title">Description du projet</h3>
+
+          <div class="description-section">
+            <h4>Sujet du projet :</h4>
+            <p>Nous avons fait le choix d'axer notre sujet sur la <strong>détection et la transcription de la dactylologie française</strong>. La dactylologie française est un ensemble de configurations manuelles relativement simples permettant de transcrire des lettres par le mouvement des mains.</p>
+
+            <p>Considérée comme l'alphabet de la Langue des Signes Française (LSF), elle est utilisée pour épeler certaines entités nommées ou acronymes. Cependant, elle est relativement peu utilisée par les personnes sourdes, étant donné que la LSF est une langue gestuelle et contextuelle.</p>
+
+            <div class="project-note">
+              <p>Dans le cadre de ce projet, nous avions pour ambition de traiter la détection et l'analyse de signes de la LSF. Cependant, par manque de données, nous avons choisi de nous concentrer uniquement sur les signes de la dactylologie.</p>
+              <p>Nous avons créé notre propre corpus, plus facile à collecter auprès d'un public non-signant pour reproduire des signes de dactylologie plutôt que des signes complexes de LSF.</p>
+            </div>
+          </div>
+
+          <div class="description-section">
+            <h4>Objectif :</h4>
+            <p class="objective">Développer un <strong>modèle d'apprentissage automatique</strong> capable de reconnaitre les lettres de la dactylologie française à partir de vidéos et de les traduire en français écrit.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-right">
+        <div class="tasks-distribution">
+          <h3 class="tasks-title">Répartition des tâches</h3>
+          <div class="tasks-table-container">
+            <table class="tasks-table">
+              <thead>
+                <tr>
+                  <th>Catégories</th>
+                  <th>Scripts</th>
+                  <th>Auteur(s)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="category-row">
+                  <td colspan="3">Création du Corpus</td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>—</td>
+                  <td>Inès &amp; Keren &amp; Manon</td>
+                </tr>
+
+                <tr class="category-row">
+                  <td colspan="3">RNN</td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>trier_corpus.py</td>
+                  <td>Keren</td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>augmentation_donnees.py</td>
+                  <td>Keren</td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>mediapipe_extraction.py</td>
+                  <td>Manon</td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>longueur_sequence.py</td>
+                  <td>Keren</td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>rnn_models.py</td>
+                  <td>Keren &amp; Manon</td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>run_all.sh</td>
+                  <td>Keren</td>
+                </tr>
+
+                <tr class="category-row">
+                  <td colspan="3">Interface</td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>interface_web.html</td>
+                  <td>Keren &amp; Inès</td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>main_interface_web.py</td>
+                  <td>Keren &amp; Inès</td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>video_to_gif.py</td>
+                  <td>Inès</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- Données -->
 <div id="page-donnees" class="page simple-page">
-  <h2>Données</h2>
-  <div class="md-box" id="md-donnees"><span class="spinner"></span>Chargement…</div>
+  <div class="scripts-header">
+    <h2>Données</h2>
+    <button
+      onclick="window.open('https://drive.google.com/drive/u/1/folders/1WCZZWucGLJx2agkZ1Sb95Rp9NF6tlx8i?hl=fr', '_blank')"
+      class="btn btn-ghost github-link"
+      style="margin-top: 10px; font-size: 12px;">
+      Voir notre Google Drive
+    </button>
+  </div>
+  <div class="md-box" style="max-width:900px;background:transparent;border:none;padding:0">
+    <div class="dn-wrap">
+
+      <div class="dn-section">
+        <div class="dn-section-head">
+          <span class="dn-section-title">Vidéos originales</span>
+          <div class="dn-section-line"></div>
+        </div>
+        <div class="dn-card">
+          <p>Les vidéos originales ont été tournées à notre demande par <strong>des personnes que nous connaissons</strong>, qui ont accepté de nous transmettre leurs données dans le cadre de notre projet, et par <strong>nous-mêmes</strong>. Les vidéos nous ont été transmises sous deux formats :</p>
+          <div class="dn-chips">
+            <div class="dn-chip"><span class="dn-chip-dot"></span>Vidéos séparées (1 vidéo / signe) — vérification visuelle uniquement</div>
+            <div class="dn-chip"><span class="dn-chip-dot"></span>Vidéo longue (tous les signes) — découpage manuel puis vérification visuelle</div>
+          </div>
+          <p style="margin-top:14px">Suite à cette vérification, certaines vidéos ont été jugées <strong>inutilisables</strong> car le signe n'était pas produit correctement ou avec une précision suffisante pour que nous prenions le risque de le fournir à notre modèle et que cela puisse fausser nos prédictions. Les vidéos sont classées en petits sous-corpus qui correspondent aux vidéos sur lesquelles une même personne apparait.</p>
+          <div class="dn-naming">
+            <div class="dn-naming-label">Convention de nommage</div>
+            <div class="dn-naming-code">InitialesPrénom·Nom_lettre.mp4</div>
+            <div class="dn-naming-note">En cas de doublon (ex. MM), la deuxième lettre du prénom est ajoutée : <strong>MiM</strong>, <strong>MaM</strong>…</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dn-section">
+        <div class="dn-section-head">
+          <span class="dn-section-title">Droits à l'image &amp; conformité RGPD</span>
+          <div class="dn-section-line"></div>
+        </div>
+        <div class="dn-rgpd">
+          <p>Dans un soucis de respecter <strong>la législation</strong> en vigueur concernant <strong>l'utilisation de données personnelles</strong>, en particulier lorsqu'il s'agit de vidéos où les personnes sont identifiables, nous avons fait le choix de demander aux participants de <strong>signer une autorisation de droit à l'image</strong>. Cela nous permet de <strong>protéger</strong> à la fois les participants et l'équipe du projet, le droit à l'image protégeant toute personne contre l'utilisation, la diffusion ou la reproduction de son image sans son consentement explicite. Il était <strong>essentiel</strong> pour nous de nous <strong>assurer du consentement éclairé des participants</strong> ainsi que de leur <strong>compréhension des conditions d'utilisation de leurs données</strong> (ici analyse seulement). En effet, les vidéos collectées ont été tournées <strong>uniquement</strong> dans le cadre de notre projet, ainsi <strong>elles ne pourront être utilisées que dans ce cadre précis</strong>. Nous avons donc le consentement explicite et attesté de tous les particuliers dont nous avons utilisé les vidéos.</p>
+        </div>
+      </div>
+
+      <div class="dn-section">
+        <div class="dn-section-head">
+          <span class="dn-section-title">Vidéos de corpus préexistants</span>
+          <div class="dn-section-line"></div>
+        </div>
+        <div class="dn-grid">
+          <div class="dn-mini">
+            <div class="dn-mini-title">Corpus 40brèves</div>
+            <p>Corpus hébergé sur <strong>Ortolang</strong>, dont nous avons extrait des segments pertinents pour la dactylologie française.</p>
+            <span class="dn-tag dn-tag-cc">CC Attribution ; libre d'adaptation avec citation</span>
+          </div>
+          <div class="dn-mini">
+            <div class="dn-mini-title">Corpus Commentcasesigne</div>
+            <p>Corpus mis à disposition suite à une <strong>prise de contact directe</strong> avec les auteurs du site, qui nous ont gracieusement accordé l'accès à leurs données.</p>
+            <span class="dn-tag dn-tag-priv">Accès sur autorisation explicite</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dn-section">
+        <div class="dn-section-head">
+          <span class="dn-section-title">Augmentation des données</span>
+          <div class="dn-section-line"></div>
+        </div>
+        <div class="dn-card">
+          <p>Nous avons également fait le choix de faire de l'augmentation de données en utilisant toutes ces vidéos et en ajustant certains paramètres comme la luminosité, l'angle de la vidéo ou même en retournant la vidéo (effet miroir). Cela nous <strong>permet d'obtenir plusieurs copies aux paramètres modifiés des vidéos initiales</strong> et d'ainsi espérer améliorer les capacités de notre modèle.</p>
+          <div class="dn-augmentation-schema">
+            <div class="dn-schema-before">
+              <div class="dn-schema-number">000</div>
+              <div class="dn-schema-label">Nombre de vidéos originales</div>
+            </div>
+            <div class="dn-schema-arrow">→</div>
+            <div class="dn-schema-after">
+              <div class="dn-schema-number">000</div>
+              <div class="dn-schema-label">Nombre de vidéos après augmentation</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
 </div>
 
-<!-- Scripts  -->
-<div id="page-scripts" class="page simple-page">
-  <h2>Scripts</h2>
-  <div class="md-box" id="md-scripts"><span class="spinner"></span>Chargement…</div>
+<!-- Scripts -->
+<div id="page-scripts" class="page">
+  <div class="scripts-header">
+    <h2>Scripts</h2>
+    <button
+      onclick="window.open('https://github.com/KerenDague/Detection_et_analyse_de_dactylologie_francaise', '_blank')"
+      class="btn btn-ghost github-link"
+      style="margin-top: 10px; font-size: 12px;">
+      Voir notre GitHub
+    </button>
+  </div>
+
+  <div class="scripts-section">
+    <div class="section-label">
+      <span class="section-label-title">RNN</span>
+      <span class="section-label-count">6 scripts</span>
+      <div class="section-label-line"></div>
+    </div>
+    <div class="scripts-grid">
+
+      <div class="script-card">
+        <div class="script-card-top">
+          <div class="script-card-name">1. trier_corpus</div>
+          <span class="script-card-ext">.py</span>
+        </div>
+        <div class="script-card-desc">Ce script organise automatiquement les vidéos. Il parcourt l'ensemble des vidéos d'un dossier et les classe automatiquement dans des sous-dossiers dédiés à chaque lettre de l'alphabet. Cette organisation méthodique selon le modèle "A/", "B/", "C/" ... permet non seulement de faciliter les étapes ultérieures de traitement mais aussi de maintenir un corpus bien structuré et facilement navigable.</div>
+      </div>
+
+      <div class="script-card">
+        <div class="script-card-top">
+          <div class="script-card-name">2. augmentation_donnees</div>
+          <span class="script-card-ext">.py</span>
+        </div>
+        <div class="script-card-desc">Ce script permet l'enrichissement de notre base de données. Trois techniques d'augmentation sont utilisées : une symétrie horizontale appliquée uniquement aux signes qui le permettent, des ajustements aléatoires de la luminosité pour simuler différentes conditions d'éclairage, et des rotations légères pour représenter des variations naturelles de positionnement. Chaque vidéo source peut ainsi générer jusqu'à trois variantes distinctes, ce qui permet de multiplier significativement la taille de notre corpus sans avoir à collecter de nouvelles données brutes. Les vidéos augmentées sont systématiquement enregistrées avec des suffixes pour éviter toute confusion et faciliter leur identification.</div>
+      </div>
+
+      <div class="script-card">
+        <div class="script-card-top">
+          <div class="script-card-name">3. mediapipe_extraction</div>
+          <span class="script-card-ext">.py</span>
+        </div>
+        <div class="script-card-desc">Ce script d'extraction utilise la bibliothèque MediaPipe pour analyser chaque image des vidéos. Il exploite le modèle HandLandmarker qui identifie et suit avec précision 21 points clés sur la main, capturant ainsi les configurations manuelles spécifiques à chaque lettre de la dactylologie. Pour chaque frame vidéo, les coordonnées spatiales de ces points sont extraites et stockées dans des fichiers au format .npy, créant une représentation numérique précise des mouvements. En parallèle, le script génère des vidéos de visualisation qui superposent les points détectés sur les images originales, ce qui permet une vérification visuelle de la qualité de l'extraction et facilite le débogage.</div>
+      </div>
+
+      <div class="script-card">
+        <div class="script-card-top">
+          <div class="script-card-name">4. longueur_sequence</div>
+          <span class="script-card-ext">.py</span>
+        </div>
+        <div class="script-card-desc">Ce script remplit une double fonction dans notre pipeline de traitement. Dans un premier temps, il réalise une analyse statistique complète des séquences de landmarks, calculant les longueurs moyenne, médiane, maximale et minimale des séquences ainsi que leur distribution. Ces métriques sont visualisées sous forme de graphiques qui nous aident à comprendre la structure temporelle de nos données. Dans un second temps, le script prépare les données pour l'entrainement en normalisant la longueur de toutes les séquences, soit en les tronquant, soit en les complétant avec des valeurs nulles (padding). Cette uniformisation est cruciale pour que notre modèle puisse traiter efficacement les séquences lors de l'entrainement.</div>
+      </div>
+
+      <div class="script-card">
+        <div class="script-card-top">
+          <div class="script-card-name">5. rnn_models</div>
+          <span class="script-card-ext">.py</span>
+        </div>
+        <div class="script-card-desc">Ce script contient l'implémentation complète de notre modèle de reconnaissance basé sur une architecture LSTM, spécialement conçue pour traiter les séquences temporelles de landmarks. Il intègre toutes les composantes nécessaires à l'entrainement d'un modèle performant : chargement et préparation des données, séparation en ensembles d'entrainement et de test, définition de l'architecture du réseau de neurones, fonctions d'entrainement et d'évaluation, ainsi que des outils de visualisation des résultats. Le modèle utilise PyTorch et est optimisé pour apprendre les motifs temporels complexes qui distinguent chaque lettre de la dactylologie.</div>
+      </div>
+
+      <div class="script-card">
+        <div class="script-card-top">
+          <div class="script-card-name">run_all</div>
+          <span class="script-card-ext">.sh</span>
+        </div>
+        <div class="script-card-desc">Ce script shell représente notre outil d'orchestration qui automatise l'exécution complète de notre pipeline de traitement. En une seule commande, il lance tous les scripts dans l'ordre.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="scripts-section">
+    <div class="section-label">
+      <span class="section-label-title">Interface</span>
+      <span class="section-label-count">3 scripts</span>
+      <div class="section-label-line"></div>
+    </div>
+    <div class="scripts-grid">
+
+      <div class="script-card">
+        <div class="script-card-top">
+          <div class="script-card-name">interface_web</div>
+          <span class="script-card-ext">.html</span>
+        </div>
+        <div class="script-card-desc">Ce fichier contient toute la partie HTML et CSS de l'interface web. Il permet une navigation fluide entre les différentes sections, de gérer le flux caméra via l'API MediaDevices et d'envoyer les images à l'API FastAPI, d'afficher en temps réel la lettre prédite, le score de confiance et le top 3, ainsi que de parcourir les signes de référence de l'alphabet dactylologique. Il inclut également un explorateur interactif de l'API.</div>
+      </div>
+
+      <div class="script-card">
+        <div class="script-card-top">
+          <div class="script-card-name">main_interface_web</div>
+          <span class="script-card-ext">.py</span>
+        </div>
+        <div class="script-card-desc">Ce script constitue le serveur backend développé avec FastAPI. Il définit la base de données des 26 lettres de la dactylologie française et expose plusieurs endpoints REST : statut du serveur, liste des lettres avec métadonnées, détails d'une lettre, prédiction depuis une image en base64 avec score de confiance et top 3, et deux endpoints de statistiques de session. Il sert également directement le fichier index.html depuis un seul processus uvicorn.</div>
+      </div>
+
+      <div class="script-card">
+        <div class="script-card-top">
+          <div class="script-card-name">video_to_gif</div>
+          <span class="script-card-ext">.py</span>
+        </div>
+        <div class="script-card-desc">Ce script transforme les vidéos en gifs en retirant l'arrière-plan et en isolant le passage intéressant. Il prend en entrée des fichiers mp4 et produit des fichiers gif. Ces gifs sont ensuite utilisés dans la page de démonstration afin de proposer à l'utilisateur un exemple de chaque signe pouvant être reconnu.</div>
+      </div>
+
+    </div>
+  </div>
 </div>
 
-<!-- Résultats -->
+<!--Difficultés -->
+<div id="page-difficultes" class="page">
+  <div class="scripts-header">
+    <h2>Difficultés rencontrées</h2>
+  </div>
+
+  <div class="diff-wrap">
+
+    <div class="diff-card partial">
+      <div>
+        <div class="diff-top">
+          <span class="diff-title">Qualité des vidéos</span>
+          <span class="diff-badge partial">Résolu</span>
+        </div>
+        <div class="diff-body">
+          Les vidéos collectées présentaient des <strong>variations importantes</strong> : conditions d'éclairage, angles de prise de vue, distance à la caméra, fond. Certaines vidéos étaient tout simplement inutilisables car le signe n'était pas produit correctement ou les deux mains étaient visibles dans la vidéos et donc, dès fois, mediapipe captait les données de la mauvaise main (celle qui ne signait pas).
+          <div class="diff-solution">
+            <div class="diff-solution-label">Solution</div>
+            <strong>Vérification manuelle</strong> de chaque vidéo, avec mise de côté des vidéos défectueuses. 
+          </div>
+        </div>
+      </div>
+    </div> 
+
+    <div class="diff-card resolved">
+      <div>
+        <div class="diff-top">
+          <span class="diff-title">Incompatibilité des vidéos en noir et blanc</span>
+          <span class="diff-badge resolved">Résolu</span>
+        </div>
+        <div class="diff-body">
+          Au début, notre corpus comprenait à la fois des vidéos en couleur et en noir et blanc. Lors de l'extraction des landmarks MediaPipe, nous avons constaté que le modèle de détection de mains de MediaPipe <strong>ne parvenait pas à identifier les mains sur du contenu en noir et blanc</strong>. MediaPipe est en effet entrainé sur des images en couleur (RGB) : la teinte de la peau, les ombres et les contrastes colorés font partie des indices qu'il exploite pour localiser la main. En noir et blanc, ces informations sont absentes, ce qui rend la détection <strong>très peu fiable</strong>.
+          <div class="diff-solution">
+            <div class="diff-solution-label">Solution</div>
+            Face à cette impasse, nous avons pris la décision de <strong>ne pas inclure du contenu en noir et blanc</strong> dans notre corpus final
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="diff-card">
+      <div>
+        <div class="diff-top">
+          <span class="diff-title">Manque de données initiales</span>
+          <span class="diff-badge">Résolu</span>
+        </div>
+        <div class="diff-body">
+          Notre corpus initial était <strong>insuffisant</strong> pour entrainer un modèle robuste. Nous ne disposions que d'un nombre limité de vidéos par lettre, ce qui risquait de conduire à de overfitting.
+          <div class="diff-solution">
+            <div class="diff-solution-label">Solution</div>
+            Mise en place d'un pipeline d'<strong>augmentation de données</strong> (symétrie, rotation, luminosité) via <code>augmentation_donnees.py</code>, permettant de multiplier le corpus par trois.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="diff-card partial">
+      <div>
+        <div class="diff-top">
+          <span class="diff-title">Data leakage </span>
+          <span class="diff-badge partial">Résolu</span>
+        </div>
+        <div class="diff-body">
+          L'augmentation de données a résolu le problème de volume, mais en a introduit un autre : le data leakage. Les vidéos augmentées sont des variantes <strong>très proches des vidéos originales</strong>. Si une vidéo originale se retrouve dans l'ensemble d'entrainement et sa version augmentée dans l'ensemble de test, le modèle est évalué sur des données qu'<strong>il a en réalité déjà vues</strong> (ce qui fausse complètement les résultats). C'est exactement ce qui s'est produit : nous avons observé une accuracy de 90 %, un score anormalement élevé qui ne reflétait pas les vraies capacités du modèle.
+          <div class="diff-solution">
+            <div class="diff-solution-label">Solution</div>
+            1.	Placement des vidéos augmentées dans le même ensemble que leur vidéo originale, garantissant ainsi que les données de test soient totalement nouvelles pour le modèle.
+            2.	Sélection manuelle des vidéos d'entrainement, en privilégiant celles réalisées par des signant dont nous étions certaines de la qualité d'exécution.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="diff-card resolved">
+      <div>
+        <div class="diff-top">
+          <span class="diff-title">Séquences de longueur abérrantes</span>
+          <span class="diff-badge resolved">Partiellement résolu</span>
+        </div>
+        <div class="diff-body">
+          Une fois les landmarks extraits, l'étape suivante consistait à analyser la longueur des séquences. En <strong>calculant les statistiques</strong> sur l'ensemble des séquences, nous avons repéré <strong>deux types</strong> de cas problématiques : Nous avions des séquences de longueur 0 mes aussi des séquences anormalement longues.
+          <div class="diff-solution">
+            <div class="diff-solution-label">Solution</div>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Résultats -->
 <div id="page-resultats" class="page simple-page">
   <h2>Résultats</h2>
   <div class="md-box" id="md-resultats"><span class="spinner"></span>Chargement…</div>
 </div>
 
-<!-- Démo -->
+<!-- Démonstration -->
 <div id="page-demo" class="page">
   <h2 class="page-title">Démo</h2>
   <div class="demo-columns">
-    <!-- Colonne gauche : caméra + stats -->
     <div class="demo-left">
       <p class="col-title">Flux Caméra en Direct</p>
       <div id="cam-wrap">
@@ -243,7 +710,6 @@ main{flex:1;display:flex;flex-direction:column}
       </div>
     </div>
 
-    <!-- Colonne centre : prédiction -->
     <div class="demo-right">
       <p class="col-title">Prédiction</p>
       <div class="pred-card">
@@ -271,11 +737,8 @@ main{flex:1;display:flex;flex-direction:column}
       </div>
     </div>
 
-    <!-- Colonne droite : signes de référence -->
     <div class="demo-signs">
       <p class="col-title">Signes de référence</p>
-
-      <!-- Carte GIF agrandi du signe sélectionné -->
       <div class="active-sign-card" id="active-sign-card">
         <div class="asc-gif" id="asc-gif">
           <span class="asc-gif-ph" id="asc-ph"></span>
@@ -286,8 +749,6 @@ main{flex:1;display:flex;flex-direction:column}
           <div class="asc-desc" id="asc-desc"></div>
         </div>
       </div>
-
-      <!-- Grille des lettres -->
       <div class="signs-panel">
         <div class="signs-panel-hd">
           <div class="signs-panel-title">Choisissez un signe à reproduire</div>
@@ -307,9 +768,9 @@ main{flex:1;display:flex;flex-direction:column}
       </div>
     </div>
   </div>
-</div><!-- /page-demo -->
+</div>
 
-<!-- Documentation -->
+<!-- Doc -->
 <div id="page-documentation" class="page simple-page">
   <h2>Documentation</h2>
   <div class="md-box" id="md-documentation"><span class="spinner"></span>Chargement…</div>
@@ -318,18 +779,15 @@ main{flex:1;display:flex;flex-direction:column}
 </main>
 
 <script>
-const API = '';  /* même origine que le serveur */
+const API = '';
 
-/* ═══════════════════════════════════════
-   API STATUS
-═══════════════════════════════════════ */
+/* API status */
 async function checkApi() {
   try {
     const r = await fetch(API + '/status', { signal: AbortSignal.timeout(2000) });
     const d = await r.json();
     document.getElementById('api-dot').className = 'dot ok';
-    document.getElementById('api-status-text').textContent =
-      `API connectée — v${d.version}`;
+    document.getElementById('api-status-text').textContent = `API connectée — v${d.version}`;
   } catch {
     document.getElementById('api-dot').className = 'dot err';
     document.getElementById('api-status-text').textContent = 'API non disponible (localhost:8000)';
@@ -338,16 +796,11 @@ async function checkApi() {
 checkApi();
 setInterval(checkApi, 15000);
 
-/* ═══════════════════════════════════════
-   NAVIGATION
-═══════════════════════════════════════ */
+/* Navigation */
 const loaded = {};
 const MD_URLS = {
-  accueil:  'https://raw.githubusercontent.com/KerenDague/Detection_et_analyse_de_dactylologie_francaise/main/Interface/MD/accueil.md',
-  donnees:  'https://raw.githubusercontent.com/KerenDague/Detection_et_analyse_de_dactylologie_francaise/main/Interface/MD/donnees.md',
-  scripts:  'https://raw.githubusercontent.com/KerenDague/Detection_et_analyse_de_dactylologie_francaise/main/Interface/MD/scripts.md',
-  resultats:'https://raw.githubusercontent.com/KerenDague/Detection_et_analyse_de_dactylologie_francaise/main/Interface/MD/resultats.md',
-  documentation:'https://raw.githubusercontent.com/KerenDague/Detection_et_analyse_de_dactylologie_francaise/main/Interface/MD/documentation.md',
+  resultats:     'https://raw.githubusercontent.com/KerenDague/Detection_et_analyse_de_dactylologie_francaise/main/Interface/MD/resultats.md',
+  documentation: 'https://raw.githubusercontent.com/KerenDague/Detection_et_analyse_de_dactylologie_francaise/main/Interface/MD/documentation.md',
 };
 
 function showPage(id, btn) {
@@ -357,16 +810,14 @@ function showPage(id, btn) {
   btn.classList.add('active');
   if (id !== 'demo' && cameraActive) stopCamera();
   if (id === 'demo' && allLetters.length === 0) loadSigns();
-  const mdPages = ['accueil', 'donnees', 'scripts', 'resultats', 'documentation'];
+  const mdPages = ['resultats', 'documentation'];
   if (mdPages.includes(id) && !loaded[id]) {
     loaded[id] = true;
     loadMd(id);
   }
 }
 
-/* ═══════════════════════════════════════
-   MARKDOWN
-═══════════════════════════════════════ */
+/* Markdown */
 async function loadMd(key) {
   const el = document.getElementById('md-' + key);
   try {
@@ -393,52 +844,34 @@ function md2html(t) {
     .replace(/^(?!<)/gm, '');
 }
 
-// Chargement initial de l'accueil
-loadMd('accueil');
 
-/* ═══════════════════════════════════════
-   CAMÉRA + MEDIAPIPE JS (landmarks fluides)
-═══════════════════════════════════════ */
+/* Caméra + Mediapipe */
 let cameraActive = false, mediaStream = null, inferTimer = null, mpCamera = null;
 
-// Initialisation MediaPipe Hands 
-const mpHands = new Hands({
-  locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}`
-});
-mpHands.setOptions({
-  maxNumHands: 1,
-  modelComplexity: 1,
-  minDetectionConfidence: 0.5,
-  minTrackingConfidence: 0.5,
-});
+const mpHands = new Hands({ locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}` });
+mpHands.setOptions({ maxNumHands:1, modelComplexity:1, minDetectionConfidence:0.5, minTrackingConfidence:0.5 });
 mpHands.onResults(onHandResults);
 
 function onHandResults(results) {
   const cvs = document.getElementById('cam-canvas');
   const ctx = cvs.getContext('2d');
   const vid = document.getElementById('cam-video');
-  cvs.width  = vid.videoWidth  || 640;
+  cvs.width = vid.videoWidth || 640;
   cvs.height = vid.videoHeight || 480;
   ctx.clearRect(0, 0, cvs.width, cvs.height);
   if (results.multiHandLandmarks) {
     for (const landmarks of results.multiHandLandmarks) {
-      drawConnectors(ctx, landmarks, HAND_CONNECTIONS,
-        { color: '#8B2240', lineWidth: 3 });
-      drawLandmarks(ctx, landmarks,
-        { color: '#263660', lineWidth: 1, radius: 4 });
+      drawConnectors(ctx, landmarks, HAND_CONNECTIONS, { color: '#8B2240', lineWidth: 3 });
+      drawLandmarks(ctx, landmarks, { color: '#263660', lineWidth: 1, radius: 4 });
     }
   }
 }
 
-async function toggleCamera() {
-  cameraActive ? stopCamera() : await startCamera();
-}
+async function toggleCamera() { cameraActive ? stopCamera() : await startCamera(); }
 
 async function startCamera() {
   try {
-    mediaStream = await navigator.mediaDevices.getUserMedia({
-      video: { width: 640, height: 480, facingMode: 'user' }
-    });
+    mediaStream = await navigator.mediaDevices.getUserMedia({ video: { width:640, height:480, facingMode:'user' } });
     const vid = document.getElementById('cam-video');
     vid.srcObject = mediaStream;
     vid.style.display = 'block';
@@ -448,19 +881,10 @@ async function startCamera() {
     btn.textContent = '⏹  Arrêter la caméra';
     btn.className = 'btn btn-stop';
     cameraActive = true;
-
-    // Boucle MediaPipe — landmarks à 30fps, tout dans le navigateur
-    mpCamera = new Camera(vid, {
-      onFrame: async () => { await mpHands.send({ image: vid }); },
-      width: 640, height: 480,
-    });
+    mpCamera = new Camera(vid, { onFrame: async () => { await mpHands.send({ image: vid }); }, width:640, height:480 });
     mpCamera.start();
-
-    // Inférence serveur toutes les 1.5s pour la prédiction uniquement
     inferTimer = setInterval(runInference, 1500);
-  } catch(e) {
-    alert("Impossible d'ouvrir la caméra : " + e.message);
-  }
+  } catch(e) { alert("Impossible d'ouvrir la caméra : " + e.message); }
 }
 
 function stopCamera() {
@@ -483,7 +907,7 @@ function stopCamera() {
 function captureFrame() {
   const vid = document.getElementById('cam-video');
   const cvs = document.getElementById('capture-canvas');
-  cvs.width  = vid.videoWidth  || 320;
+  cvs.width = vid.videoWidth || 320;
   cvs.height = vid.videoHeight || 240;
   cvs.getContext('2d').drawImage(vid, 0, 0);
   return cvs.toDataURL('image/jpeg', 0.8);
@@ -523,8 +947,6 @@ function updatePrediction(d) {
   document.getElementById('conf-pct').style.color = color;
   document.getElementById('conf-pct').textContent = pct + ' %';
   document.getElementById('proc-time').textContent = `Traité en ${d.processing_time_ms} ms`;
-
-  // Top-3
   const rows = document.querySelectorAll('.top3-row');
   d.top3.forEach((item, i) => {
     const p = Math.round(item.confidence * 100);
@@ -532,8 +954,6 @@ function updatePrediction(d) {
     rows[i].querySelector('.top3-bar').style.width = p + '%';
     rows[i].querySelector('.top3-pct').textContent = p + ' %';
   });
-
-  // Type badge + description depuis API
   fetchLetterInfo(d.letter);
 }
 
@@ -562,17 +982,14 @@ function resetUI() {
   });
 }
 
-/* ═══════════════════════════════════════
-   STATS
-═══════════════════════════════════════ */
+/*Stats */
 async function fetchStats() {
   try {
     const r = await fetch(API + '/stats', { signal: AbortSignal.timeout(2000) });
     if (!r.ok) return;
     const d = await r.json();
     document.getElementById('st-total').textContent = d.total_predictions;
-    document.getElementById('st-rate').textContent = d.total_predictions
-      ? Math.round(d.high_confidence_rate * 100) + '%' : '–';
+    document.getElementById('st-rate').textContent = d.total_predictions ? Math.round(d.high_confidence_rate * 100) + '%' : '–';
     document.getElementById('st-ppm').textContent = d.predictions_per_minute || '–';
   } catch {}
 }
@@ -586,94 +1003,7 @@ async function resetStats() {
   } catch {}
 }
 
-/* ═══════════════════════════════════════
-   API EXPLORER (page API)
-═══════════════════════════════════════ */
-function toggleEndpoint(header) {
-  const body = header.nextElementSibling;
-  body.classList.toggle('open');
-}
-
-const respIds = {
-  'GET /': 'resp-get-root',
-  'GET /letters': 'resp-get-letters',
-  'GET /letters?type=voyelle': 'resp-get-letters',
-  'GET /letters?type=consonne': 'resp-get-letters',
-  'GET /stats': 'resp-get-stats',
-  'DELETE /stats': 'resp-delete-stats',
-};
-
-async function tryEndpoint(method, path) {
-  const key = method + ' ' + path;
-  const boxId = respIds[key] || ('resp-' + method.toLowerCase() + '-' + path.replace(/\//g,'-').replace(/[{}?=]/g,''));
-  let box = document.getElementById(boxId);
-  if (!box) return;
-  box.style.display = 'block';
-  box.textContent = 'Chargement…';
-  try {
-    const r = await fetch(API + path, { method, headers: { 'Content-Type': 'application/json' } });
-    const d = await r.json();
-    box.textContent = JSON.stringify(d, null, 2);
-    // update stats display if we just hit /stats
-    if (path === '/stats' && method === 'GET') {
-      if (d.total_predictions !== undefined) {
-        document.getElementById('st-total').textContent = d.total_predictions;
-      }
-    }
-  } catch(e) {
-    box.textContent = '❌ Erreur : ' + e.message + '\n\nAssurez-vous que le serveur FastAPI tourne :\nuvicorn main:app --reload';
-  }
-}
-
-const letterRespBox = document.getElementById('resp-get-letter');
-// handled inline via letter-input
-
-async function tryCapturePredict() {
-  const box = document.getElementById('resp-post-predict');
-  box.style.display = 'block';
-  if (!cameraActive) {
-    box.textContent = '⚠ La caméra doit être active (onglet Démo) pour capturer une image.';
-    return;
-  }
-  box.textContent = 'Capture et envoi…';
-  const b64 = captureFrame();
-  try {
-    const r = await fetch(API + '/predict', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ image: b64, format: 'jpeg' }),
-    });
-    const d = await r.json();
-    box.textContent = JSON.stringify(d, null, 2);
-  } catch(e) {
-    box.textContent = '❌ ' + e.message;
-  }
-}
-
-// Fix: letter endpoint
-document.addEventListener('DOMContentLoaded', () => {
-  const li = document.getElementById('letter-input');
-  if (li) li.addEventListener('input', e => { e.target.value = e.target.value.toUpperCase().slice(-1); });
-});
-
-// Override GET /letters/{letter} try button since path is dynamic
-const getLetterBox = document.getElementById('resp-get-letter');
-window.tryLetterEndpoint = async () => {
-  const letter = document.getElementById('letter-input').value.toUpperCase();
-  getLetterBox.style.display = 'block';
-  getLetterBox.textContent = 'Chargement…';
-  try {
-    const r = await fetch(API + '/letters/' + letter);
-    const d = await r.json();
-    getLetterBox.textContent = JSON.stringify(d, null, 2);
-  } catch(e) {
-    getLetterBox.textContent = '❌ ' + e.message;
-  }
-};
-
-/* ═══════════════════════════════════════
-   PANNEAU SIGNES (colonne droite démo)
-═══════════════════════════════════════ */
+/*Signes panel */
 let allLetters = [];
 let currentSignFilter = 'all';
 
@@ -714,20 +1044,15 @@ function renderSigns(type) {
 }
 
 function selectSign(l) {
-  // Highlight selected
   document.querySelectorAll('.sign-thumb').forEach(t => t.classList.remove('active'));
   const el = document.getElementById('st-' + l.letter);
   if (el) el.classList.add('active');
-
-  // Show big card
   const card = document.getElementById('active-sign-card');
   const gifDiv = document.getElementById('asc-gif');
   document.getElementById('asc-badge').textContent = l.letter;
   document.getElementById('asc-ph').textContent = l.gif_url ? '' : l.letter;
   document.getElementById('asc-title').textContent = l.type + ' — ' + l.difficulty;
   document.getElementById('asc-desc').textContent = l.description;
-
-  // Update GIF
   const existing = gifDiv.querySelector('img');
   if (existing) existing.remove();
   document.getElementById('asc-ph').style.display = l.gif_url ? 'none' : 'block';
@@ -738,17 +1063,9 @@ function selectSign(l) {
     img.onerror = () => { img.remove(); document.getElementById('asc-ph').style.display = 'block'; };
     gifDiv.insertBefore(img, gifDiv.firstChild);
   }
-
   card.classList.add('show');
 }
 
-// Charger les signes dès qu'on arrive sur la page démo
-document.querySelectorAll('nav button').forEach((btn, i) => {
-  btn.addEventListener('click', () => {
-    if (btn.textContent.trim() === 'Démo' && allLetters.length === 0) loadSigns();
-  });
-});
-// Aussi au chargement si démo est active par défaut
 window.addEventListener('DOMContentLoaded', () => {
   if (document.getElementById('page-demo').classList.contains('active')) loadSigns();
 });
