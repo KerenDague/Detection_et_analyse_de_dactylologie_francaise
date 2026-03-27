@@ -125,8 +125,8 @@ main{flex:1;display:flex;flex-direction:column}
 .diff-body { font-size: 13.5px; color: var(--muted); line-height: 1.7; }
 .diff-body strong { color: var(--text); font-weight: 600; }
 .diff-body code { background: var(--hover); padding: 1px 6px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: 12px; color: var(--accent2); }
-.diff-solution { margin-top: 12px; padding: 10px 14px; background: var(--hover); border-radius: 8px; font-size: 13px; color: var(--text); border-left: 3px solid var(--accent3); }
-.diff-solution-label { font-size: 11px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; color: var(--accent3); margin-bottom: 4px; }
+.diff-solution { margin-top: 12px; padding: 10px 14px; background: var(--hover); border-radius: 8px; font-size: 13px; color: var(--text); border-left: 3px solid #C4621A; }
+.diff-solution-label { font-size: 11px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; color: #C4621A;; margin-bottom: 4px; }
 .diff-section-head { display: flex; align-items: center; gap: 12px; margin-top: 8px; }
 .diff-section-title { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 700; color: var(--text); white-space: nowrap; }
 .diff-section-line { flex: 1; height: 1px; background: linear-gradient(90deg, var(--border), transparent); }
@@ -439,7 +439,7 @@ main{flex:1;display:flex;flex-direction:column}
                 <tr>
                   <td></td>
                   <td>main_interface_web.py</td>
-                  <td>Keren &amp; Inès</td>
+                  <td>Keren &amp; Inès &amp; Manon</td>
                 </tr>
                 <tr>
                   <td></td>
@@ -997,7 +997,9 @@ main{flex:1;display:flex;flex-direction:column}
 
 <!-- Démonstration -->
 <div id="page-demo" class="page">
-  <h2 class="page-title">Démo</h2>
+  <div class="scripts-header">
+    <h2>Démonstration</h2>
+  </div>
   <div class="demo-columns">
     <div class="demo-left">
       <p class="col-title">Flux Caméra en Direct</p>
@@ -1086,12 +1088,55 @@ main{flex:1;display:flex;flex-direction:column}
   </div>
 </div>
 
-<!-- Doc -->
-<div id="page-documentation" class="page simple-page">
-  <h2>Documentation</h2>
-  <div class="md-box" id="md-documentation"><span class="spinner"></span>Chargement…</div>
-</div>
 
+<!-- Documentation -->
+<div id="page-documentation" class="page">
+  <div class="scripts-header">
+    <h2>Documentation</h2>
+    <p>Bibliothèques utilisées dans ce projet qui n'ont pas été abordées en cours</p>
+  </div>
+ 
+  <div class="diff-wrap">
+ 
+    <div class="diff-card resolved">
+      <div>
+        <div class="diff-top">
+          <span class="diff-title">MediaPipe</span>
+          <span class="diff-badge resolved">Google — Open Source</span>
+        </div>
+        <div class="diff-body">
+          Bibliothèque open source développée par Google, conçue pour appliquer des <strong>pipelines de traitement de données multimédia</strong> (vidéo, audio, images) en temps réel.
+          <br/><br/>
+          Dans ce projet, on utilise son module <code>HandLandmarker</code> qui détecte et localise <strong>21 points clés sur la main</strong> (articulations, bout des doigts, paume) à partir d'une image ou d'une vidéo. Ces points, appelés <strong>landmarks</strong>, sont retournés sous forme de coordonnées normalisées et constituent la base des vecteurs transmis au modèle de classification.
+          <div class="diff-solution">
+            <div class="diff-solution-label" style="color:#C4621A">Utilisation dans le projet</div>
+            Extraction des landmarks depuis les frames vidéo via <code>hand_landmarker.task</code>, en mode image statique (<code>RunningMode.IMAGE</code>). Les 21 points × 3 coordonnées (x, y, z) forment un vecteur de 63 valeurs par frame.
+          </div>
+        </div>
+      </div>
+    </div>
+ 
+    <div class="diff-card resolved">
+      <div>
+        <div class="diff-top">
+          <span class="diff-title">OpenCV</span>
+          <span class="diff-badge resolved">Open Source Computer Vision Library</span>
+        </div>
+        <div class="diff-body">
+          Bibliothèque open source spécialisée dans le <strong>traitement d'images et de vidéos en temps réel</strong>. Dans ce projet, elle est utilisée à deux niveaux :
+          <br/><br/>
+          — Dans les <strong>scripts d'extraction</strong> : pour lire les fichiers vidéo, dessiner les landmarks détectés par MediaPipe sur les frames, et écrire les vidéos de débogage.
+          <br/>
+          — Dans le <strong>serveur FastAPI</strong> : pour décoder les images base64 reçues depuis le navigateur, les convertir en tableaux numpy et les préparer avant l'envoi à MediaPipe.
+          <div class="diff-solution">
+            <div class="diff-solution-label" style="color:#C4621A">Utilisation dans le projet</div>
+            Lecture vidéo (<code>cv2.VideoCapture</code>), conversion colorimétrique (<code>cv2.cvtColor</code>), décodage d'images base64 (<code>cv2.imdecode</code>), dessin de landmarks et export JPEG.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 </main>
 
 <script>
