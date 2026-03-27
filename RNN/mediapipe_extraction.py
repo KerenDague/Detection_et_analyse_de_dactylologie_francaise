@@ -26,20 +26,12 @@ HandLandmarkerOptions = vision.HandLandmarkerOptions
 VisionRunningMode = vision.RunningMode
 
 VIDEO_EXTENSIONS = {'.mp4', '.mov'}
-IMAGE_EXTENSIONS = {'.jpg', '.jpeg', '.png'}
 
 options_video = HandLandmarkerOptions(
     base_options=base_options,
     running_mode=VisionRunningMode.VIDEO,
     num_hands=1,
 )
-
-options_image = HandLandmarkerOptions(
-    base_options=base_options,
-    running_mode=VisionRunningMode.IMAGE,
-    num_hands=1,
-)
-
 
 def traiter_video(video_path, output_lettre_corpus, video_name):
     cam = cv2.VideoCapture(video_path)
@@ -51,7 +43,7 @@ def traiter_video(video_path, output_lettre_corpus, video_name):
     height = int(cam.get(cv2.CAP_PROP_FRAME_HEIGHT))
     fps    = cam.get(cv2.CAP_PROP_FPS)
 
-    # 🔴 sécurité fps
+    # sécurité fps
     if fps == 0 or fps is None:
         fps = 30
 
@@ -62,7 +54,7 @@ def traiter_video(video_path, output_lettre_corpus, video_name):
     try:
         with HandLandmarker.create_from_options(options_video) as landmarker:
             video_data = []
-            frame_index = 0  # 🔥 compteur manuel
+            frame_index = 0  # compteur manuel
 
             while cam.isOpened():
                 ret, frame = cam.read()
@@ -72,7 +64,7 @@ def traiter_video(video_path, output_lettre_corpus, video_name):
                 frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                 mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=frame_rgb)
 
-                # 🔥 timestamp manuel (FIX PRINCIPAL)
+                # timestamp manuel (FIX PRINCIPAL)
                 frame_timestamp_ms = int(frame_index * (1000 / fps))
 
                 try:
@@ -94,7 +86,7 @@ def traiter_video(video_path, output_lettre_corpus, video_name):
                         cv2.circle(frame, (x_px, y_px), 5, (0, 255, 0), -1)
                         frame_points.extend([lm.x, lm.y, lm.z])
 
-                # 🔥 Toujours ajouter une frame (évite les séquences vides)
+                # Toujours ajouter une frame (évite les séquences vides)
                 if len(frame_points) == 63:
                     video_data.append(frame_points)
                 else:
@@ -103,7 +95,7 @@ def traiter_video(video_path, output_lettre_corpus, video_name):
                 out.write(frame)
                 frame_index += 1
 
-            # 🔴 sécurité finale
+            # sécurité finale
             if len(video_data) == 0:
                 print(f"[SKIP SAVE] {video_name} — aucune frame valide")
                 return
@@ -136,9 +128,6 @@ for corpus_lettre in os.listdir(base_corpus_path):
 
         if extension in VIDEO_EXTENSIONS:
             traiter_video(fichier_path, output_lettre_corpus, nom_sans_ext)
-
-        elif extension in IMAGE_EXTENSIONS:
-            traiter_image(fichier_path, output_lettre_corpus, nom_sans_ext)
 
         else:
             print(f"[Ignoré] Format non supporté : {fichier}")
