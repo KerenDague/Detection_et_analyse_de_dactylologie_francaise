@@ -684,7 +684,7 @@ main{flex:1;display:flex;flex-direction:column}
           Les vidéos collectées présentaient des <strong>variations importantes</strong> : conditions d'éclairage, angles de prise de vue, distance à la caméra, fond. Certaines vidéos étaient tout simplement inutilisables car le signe n'était pas produit correctement ou les deux mains étaient visibles dans la vidéos et donc, dès fois, mediapipe captait les données de la mauvaise main (celle qui ne signait pas).
           <div class="diff-solution">
             <div class="diff-solution-label">Solution</div>
-            <strong>Vérification manuelle</strong> de chaque vidéo, avec mise de côté des vidéos défectueuses. 
+            <strong>Vérification manuelle</strong> de chaque vidéo, avec mise de côté des vidéos défectueuses autant que possible car le corpus est très vaste, il est possible qu'il reste quelques vidéos défectueuse.
           </div>
         </div>
       </div>
@@ -935,7 +935,7 @@ main{flex:1;display:flex;flex-direction:column}
       <div class="res-text-card">
         <p>L'augmentation de données améliore la performance globale (<strong>+4,67 points d'accuracy</strong>), mais s'accompagne d'un phénomène d'<strong>overfitting marqué</strong> : la loss d'entrainement est descendue en dessous de 0,5, tandis que la loss de test stagne autour de 4, ce qui indique que le modèle a mémorisé les données plutôt que de généraliser.</p>
         <div class="res-highlight">
-          Ces résultats restent encourageants au regard des contraintes du problème : <strong>26 classes</strong> à distinguer, un corpus de taille modeste, et une diversité réelle limitée due à l'augmentation (mêmes locuteurs, mêmes conditions).
+          Ces résultats restent encourageants au regard des contraintes du projet : soit <strong>26 classes à distinguer, un corpus de taille modeste, et une diversité réelle limitée due à l'augmentation </strong> (mêmes locuteurs, mêmes conditions).
         </div>
         <p>Il est notable que les mêmes tendances d'erreurs se retrouvent sur les deux corpus, ce qui indique que l'augmentation de données n'introduit pas de bruit supplémentaire et ne dégrade pas la cohérence des prédictions.</p>
       </div>
@@ -1123,10 +1123,10 @@ main{flex:1;display:flex;flex-direction:column}
           <span class="diff-badge resolved">Open Source Computer Vision Library</span>
         </div>
         <div class="diff-body">
-          Bibliothèque open source spécialisée dans le <strong>traitement d'images et de vidéos en temps réel</strong>. Dans ce projet, elle est utilisée à deux niveaux :
+          Bibliothèque open source spécialisée dans le <strong>traitement d'images et de vidéos en temps réel</strong>.
           <br/><br/>
+          Dans ce projet, elle est utilisée à deux niveaux :
           — Dans les <strong>scripts d'extraction</strong> : pour lire les fichiers vidéo, dessiner les landmarks détectés par MediaPipe sur les frames, et écrire les vidéos de débogage.
-          <br/>
           — Dans le <strong>serveur FastAPI</strong> : pour décoder les images base64 reçues depuis le navigateur, les convertir en tableaux numpy et les préparer avant l'envoi à MediaPipe.
           <div class="diff-solution">
             <div class="diff-solution-label" style="color:#C4621A">Utilisation dans le projet</div>
