@@ -48,6 +48,7 @@ main{flex:1;display:flex;flex-direction:column}
 @keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 /* Simple pages */
 .simple-page h2{font-family:'Playfair Display',serif;font-size:1.8rem;text-align:center;margin-bottom:24px}
+
 /* Page d'acceuil*/
 .welcome-container { display: flex; flex-direction: column; flex: 1; min-height: 0; overflow: hidden; width: 100%; max-width: 100%; padding: 0 30px; box-sizing: border-box; }
 .welcome-header { text-align: center; margin-bottom: 24px; flex-shrink: 0; }
@@ -55,10 +56,8 @@ main{flex:1;display:flex;flex-direction:column}
 .authors { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; font-size: 14px; color: var(--muted); }
 .author-name strong { color: var(--accent); font-weight: 700; }
 .welcome-content { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; flex: 1; margin: 0; min-height: 0; }
-.content-left,
-.content-right { display: flex; flex-direction: column; min-height: 0; }
-.description-card,
-.tasks-distribution { flex: 1; min-height: 0; padding: 28px 30px; box-sizing: border-box; border-radius: 12px; background: var(--card); border: 1px solid var(--border); overflow-y: auto; }
+.content-left,.content-right { display: flex; flex-direction: column; min-height: 0; }
+.description-card,.tasks-distribution { flex: 1; min-height: 0; padding: 28px 30px; box-sizing: border-box; border-radius: 12px; background: var(--card); border: 1px solid var(--border); overflow-y: auto; }
 .description-title { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--accent); text-align: center; margin-bottom: 20px; }
 .description-section { margin-bottom: 16px; }
 .description-section h4 { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--accent2); margin-bottom: 10px; }
@@ -77,6 +76,7 @@ main{flex:1;display:flex;flex-direction:column}
 .tasks-table tbody td:nth-child(2) { font-family: 'Courier New', monospace; font-size: 12.5px; color: var(--accent2); }
 .tasks-table tbody tr:last-child { border-bottom: none; }
 @media (max-width: 992px) { .welcome-content { grid-template-columns: 1fr; gap: 16px; } }
+
 /* Page données */
 .md-box{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:28px 32px;color:var(--muted);font-size:14px;line-height:1.8;max-width:800px;margin:0 auto}
 .md-box h1,.md-box h2,.md-box h3{font-family:'Playfair Display',serif;color:var(--text);margin:1em 0 .4em}
@@ -85,6 +85,7 @@ main{flex:1;display:flex;flex-direction:column}
 .md-box a{color:var(--accent)}
 .md-box code{background:var(--hover);padding:2px 6px;border-radius:4px;font-size:12px}
 .spinner{display:inline-block;width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;margin-right:8px;vertical-align:middle}
+
 /* Page scripts*/
 #page-scripts.active { display: block; }
 #page-scripts { padding: 32px 40px; }
@@ -105,6 +106,7 @@ main{flex:1;display:flex;flex-direction:column}
 .script-card-name { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; color: var(--text); word-break: break-all; }
 .script-card-ext { font-size: 11px; font-weight: 600; color: var(--accent); background: rgba(139,34,64,.08); border: 1px solid rgba(139,34,64,.2); padding: 2px 8px; border-radius: 6px; white-space: nowrap; flex-shrink: 0; }
 .script-card-desc { font-size: 12.5px; color: var(--muted); line-height: 1.75; font-weight: 400; flex: 1; }
+
 /*Page difficultés*/
 #page-difficultes.active { display: block; }
 #page-difficultes { padding: 32px 40px; }
@@ -128,6 +130,76 @@ main{flex:1;display:flex;flex-direction:column}
 .diff-section-head { display: flex; align-items: center; gap: 12px; margin-top: 8px; }
 .diff-section-title { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 700; color: var(--text); white-space: nowrap; }
 .diff-section-line { flex: 1; height: 1px; background: linear-gradient(90deg, var(--border), transparent); }
+
+/* Page resultats */
+#page-resultats.active { display: block; }
+#page-resultats { padding: 32px 40px; }
+.res-wrap { max-width: 1000px; margin: 0 auto; display: flex; flex-direction: column; gap: 32px; }
+/* Section head (like dn-section-head) */
+.res-section-head { display: flex; align-items: center; gap: 12px; }
+.res-section-title { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 700; color: var(--text); white-space: nowrap; }
+.res-section-line { flex: 1; height: 1px; background: linear-gradient(90deg, var(--border), transparent); }
+/* KPI row */
+.res-kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.res-kpi { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px 16px; text-align: center; position: relative; overflow: hidden; transition: transform .2s, box-shadow .2s; }
+.res-kpi:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(139,34,64,.1); }
+.res-kpi::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; }
+.res-kpi.corpus-base::after  { background: var(--accent); }
+.res-kpi.corpus-aug::after   { background: var(--accent2); }
+.res-kpi-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); margin-bottom: 10px; }
+.res-kpi-val { font-family: 'Playfair Display', serif; font-size: 2.2rem; font-weight: 900; line-height: 1; color: var(--accent); }
+.res-kpi.corpus-aug .res-kpi-val { color: var(--accent2); }
+.res-kpi-unit { font-size: 12px; color: var(--muted); margin-top: 4px; }
+.res-kpi-tag { display: inline-block; margin-top: 8px; padding: 2px 8px; border-radius: 99px; font-size: 10px; font-weight: 600; }
+.tag-base { background: rgba(139,34,64,.1); color: var(--accent); border: 1px solid rgba(139,34,64,.2); }
+.tag-aug  { background: rgba(38,54,96,.1);  color: var(--accent2); border: 1px solid rgba(38,54,96,.2); }
+/* Corpus size comparison */
+.res-corpus-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.res-corpus-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; }
+.res-corpus-title { font-family: 'Playfair Display', serif; font-size: 1.05rem; color: var(--text); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+.res-corpus-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.res-corpus-row-item { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 13px; color: var(--muted); }
+.res-corpus-row-item:last-child { border-bottom: none; }
+.res-corpus-row-item strong { color: var(--text); font-weight: 600; }
+/* Images grid */
+.res-img-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.res-img-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; transition: transform .2s, box-shadow .2s; }
+.res-img-card:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(139,34,64,.1); }
+.res-img-wrap { background: var(--hover); display: flex; align-items: center; justify-content: center; min-height: 220px; position: relative; cursor: zoom-in; }
+.res-img-wrap img { width: 100%; height: auto; display: block; object-fit: contain; transition: opacity .3s; }
+.res-img-wrap img.loading { opacity: 0; }
+.res-img-caption { padding: 12px 16px; }
+.res-img-caption-title { font-family: 'Playfair Display', serif; font-size: .95rem; color: var(--text); font-weight: 700; }
+.res-img-caption-sub { font-size: 12px; color: var(--muted); margin-top: 3px; line-height: 1.5; }
+.res-img-placeholder { display: flex; flex-direction: column; align-items: center; gap: 8px; color: var(--muted); font-size: 12px; padding: 32px; text-align: center; }
+.res-img-placeholder-icon { font-size: 2rem; opacity: .4; }
+/* Lightbox */
+.res-lightbox { position: fixed; inset: 0; background: rgba(40,20,14,.85); z-index: 9999; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity .2s; }
+.res-lightbox.open { opacity: 1; pointer-events: all; }
+.res-lightbox img { max-width: 90vw; max-height: 90vh; border-radius: 8px; box-shadow: 0 24px 64px rgba(0,0,0,.5); }
+.res-lightbox-close { position: absolute; top: 20px; right: 24px; font-size: 1.8rem; color: #fff; cursor: pointer; opacity: .7; transition: opacity .15s; }
+.res-lightbox-close:hover { opacity: 1; }
+/* Text blocks */
+.res-text-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px 28px; font-size: 13.5px; color: var(--muted); line-height: 1.8; }
+.res-text-card p { margin-bottom: 12px; }
+.res-text-card p:last-child { margin-bottom: 0; }
+.res-text-card strong { color: var(--text); font-weight: 600; }
+.res-text-card .res-highlight { background: rgba(139,34,64,.06); border-left: 3px solid var(--accent); padding: 10px 14px; border-radius: 4px; margin: 14px 0; font-size: 13px; }
+/* Confusion pairs */
+.res-pairs-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.res-pair { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; display: flex; align-items: center; gap: 12px; transition: transform .15s, box-shadow .15s; }
+.res-pair:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(139,34,64,.09); }
+.res-pair-letters { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 900; color: var(--accent); flex-shrink: 0; letter-spacing: 2px; }
+.res-pair-arrow { color: var(--border); font-size: .9rem; flex-shrink: 0; }
+.res-pair-desc { font-size: 11.5px; color: var(--muted); line-height: 1.5; }
+/* Perspectives */
+.res-persp-list { display: flex; flex-direction: column; gap: 10px; }
+.res-persp-item { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 18px; display: flex; gap: 14px; align-items: flex-start; transition: transform .15s; }
+.res-persp-item:hover { transform: translateX(4px); }
+.res-persp-num { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 900; color: var(--border); line-height: 1; flex-shrink: 0; width: 28px; }
+.res-persp-body { font-size: 13px; color: var(--muted); line-height: 1.65; }
+.res-persp-body strong { color: var(--text); font-weight: 600; }
+
 /* Page démo */
 #page-demo.active{display:block;padding:24px 28px;}
 .demo-columns {display: flex;gap: 20px;align-items: flex-start;}
@@ -209,7 +281,7 @@ main{flex:1;display:flex;flex-direction:column}
 ::-webkit-scrollbar{width:5px}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
 ::-webkit-scrollbar-thumb:hover{background:var(--accent)}
-/* Données*/
+/* Données */
 .dn-wrap { display: flex; flex-direction: column; gap: 32px; max-width: 900px; margin: 0 auto; }
 .dn-section { display: flex; flex-direction: column; gap: 16px; }
 .dn-section-head { display: flex; align-items: center; gap: 12px; }
@@ -338,17 +410,17 @@ main{flex:1;display:flex;flex-direction:column}
                 <tr>
                   <td></td>
                   <td>mediapipe_extraction.py</td>
-                  <td>Manon</td>
+                  <td>Manon &amp; Inès &amp; Keren</td>
                 </tr>
                 <tr>
                   <td></td>
                   <td>longueur_sequence.py</td>
-                  <td>Keren</td>
+                  <td>Keren &amp; Inès</td>
                 </tr>
                 <tr>
                   <td></td>
                   <td>rnn_models.py</td>
-                  <td>Keren &amp; Manon</td>
+                  <td>Keren &amp; Manon &amp; Inès</td>
                 </tr>
                 <tr>
                   <td></td>
@@ -388,7 +460,7 @@ main{flex:1;display:flex;flex-direction:column}
   <div class="scripts-header">
     <h2>Données</h2>
     <button
-      onclick="window.open('https://drive.google.com/drive/u/1/folders/1WCZZWucGLJx2agkZ1Sb95Rp9NF6tlx8i?hl=fr', '_blank')"
+      onclick="window.open('https://drive.google.com/drive/u/1/folders/1tkQ_J4VpXE1RN3pAYBPNHT9MXfW_ix0r?hl=fr', '_blank')"
       class="btn btn-ghost github-link"
       style="margin-top: 10px; font-size: 12px;">
       Voir notre Google Drive
@@ -455,12 +527,12 @@ main{flex:1;display:flex;flex-direction:column}
           <p>Nous avons également fait le choix de faire de l'augmentation de données en utilisant toutes ces vidéos et en ajustant certains paramètres comme la luminosité, l'angle de la vidéo ou même en retournant la vidéo (effet miroir). Cela nous <strong>permet d'obtenir plusieurs copies aux paramètres modifiés des vidéos initiales</strong> et d'ainsi espérer améliorer les capacités de notre modèle.</p>
           <div class="dn-augmentation-schema">
             <div class="dn-schema-before">
-              <div class="dn-schema-number">000</div>
+              <div class="dn-schema-number">984</div>
               <div class="dn-schema-label">Nombre de vidéos originales</div>
             </div>
             <div class="dn-schema-arrow">→</div>
             <div class="dn-schema-after">
-              <div class="dn-schema-number">000</div>
+              <div class="dn-schema-number">3893</div>
               <div class="dn-schema-label">Nombre de vidéos après augmentation</div>
             </div>
           </div>
@@ -586,6 +658,22 @@ main{flex:1;display:flex;flex-direction:column}
 
   <div class="diff-wrap">
 
+        <div class="diff-card">
+      <div>
+        <div class="diff-top">
+          <span class="diff-title">Ressources vidéo limitées en dactylologie</span>
+          <span class="diff-badge">Résolu</span>
+        </div>
+        <div class="diff-body">
+          Les vidéos en accès libre dédiées à la dactylologie sont <strong>rares</strong>. Malgré nos recherches et nos échanges avec des experts du domaine, nous n’avons <strong>pas trouvé beaucoup de corpus existant</strong> répondant à nos besoins.
+          <div class="diff-solution">
+            <div class="diff-solution-label">Solution</div>
+            <strong>Création</strong> de vidéos spécifiques à la dactylologie pour <strong>construire une base de données</strong> adaptée et complète.
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="diff-card partial">
       <div>
         <div class="diff-top">
@@ -655,13 +743,29 @@ main{flex:1;display:flex;flex-direction:column}
       <div>
         <div class="diff-top">
           <span class="diff-title">Séquences de longueur abérrantes</span>
-          <span class="diff-badge resolved">Partiellement résolu</span>
+          <span class="diff-badge resolved">Résolu</span>
         </div>
         <div class="diff-body">
           Une fois les landmarks extraits, l'étape suivante consistait à analyser la longueur des séquences. En <strong>calculant les statistiques</strong> sur l'ensemble des séquences, nous avons repéré <strong>deux types</strong> de cas problématiques : Nous avions des séquences de longueur 0 mes aussi des séquences anormalement longues.
           <div class="diff-solution">
             <div class="diff-solution-label">Solution</div>
-            
+            Mise en place d’un <strong>filtrage automatique</strong> des séquences aberrantes via une analyse statistique (méthode IQR) pour détecter les vidéos trop longues ou trop courtes, suivie d’une normalisation : les <strong>séquences excédant 110 frames sont tronquées en supprimant les frames les plus éloignées du vecteur médian</strong> (pour conserver la pertinence temporelle), tandis que les <strong>séquences trop courtes sont complétées par padding</strong>.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="diff-card">
+      <div>
+        <div class="diff-top">
+          <span class="diff-title">Problème de gestion des timestamps avec MediaPipe</span>
+          <span class="diff-badge">Résolu</span>
+        </div>
+        <div class="diff-body">
+           MediaPipe en mode 'vidéo' nécessite que chaque image ait un <strong>timestamp strictement croissant</strong>. Cependant, certaines vidéos retournent des timestamps nuls (0) pour plusieurs images consécutives via cv2.CAP_PROP_POS_MSEC. Lorsqu’il reçoit deux fois le même timestamp, MediaPipe s’interrompt sans message d’erreur, ce qui arrête brutalement le script.
+          <div class="diff-solution">
+            <div class="diff-solution-label">Solution</div>
+            Ajout d’un <strong>calcul manuel des timestamps</strong> pour garantir leur croissance. Les frames sans landmarks sont remplies de zéros, et un <strong>FPS</strong> est utilisé si nécessaire.
           </div>
         </div>
       </div>
@@ -670,9 +774,225 @@ main{flex:1;display:flex;flex-direction:column}
 </div>
 
 <!--Résultats -->
-<div id="page-resultats" class="page simple-page">
-  <h2>Résultats</h2>
-  <div class="md-box" id="md-resultats"><span class="spinner"></span>Chargement…</div>
+<div id="page-resultats" class="page">
+  <div class="scripts-header">
+    <h2>Résultats</h2>
+  </div>
+
+  <div class="res-wrap">
+
+    <!-- Introduction -->
+    <div>
+      <div class="res-section-head" style="margin-bottom:16px">
+        <span class="res-section-title">Approche d'évaluation</span>
+        <div class="res-section-line"></div>
+      </div>
+      <div class="res-text-card">
+        <p>Afin d'évaluer rigoureusement les capacités de notre modèle, nous avons fait le choix de le tester sur <strong>deux corpus distincts</strong> : un corpus de base composé uniquement des vidéos originales collectées, et un corpus augmenté intégrant les variantes générées par notre pipeline d'augmentation de données.</p>
+        <p>Cette double évaluation nous permet de mesurer l'<strong>impact réel de l'augmentation</strong> sur les performances du modèle, mais aussi de détecter d'éventuels biais introduits par ce processus notamment le risque d'overfitting lié à la forte similitude entre vidéos originales et variantes augmentées.</p>
+        <div class="res-highlight">
+          Les deux corpus partagent la même architecture de test : les vidéos originales et leurs variantes augmentées sont systématiquement placées dans le <strong>même ensemble</strong> (entrainement ou test), afin d'éviter tout data leakage.
+        </div>
+      </div>
+    </div>
+
+    <!-- Composition des corpus -->
+    <div>
+      <div class="res-section-head" style="margin-bottom:16px">
+        <span class="res-section-title">Composition des corpus</span>
+        <div class="res-section-line"></div>
+      </div>
+      <div class="res-corpus-row">
+        <div class="res-corpus-card">
+          <div class="res-corpus-title">
+            <span class="res-corpus-dot" style="background:var(--accent)"></span>
+            Corpus de base
+          </div>
+          <div class="res-corpus-row-item"><span>Total</span><strong>984 séquences</strong></div>
+          <div class="res-corpus-row-item"><span>Entrainement</span><strong>796 séquences</strong></div>
+          <div class="res-corpus-row-item"><span>Test</span><strong>188 séquences</strong></div>
+        </div>
+        <div class="res-corpus-card">
+          <div class="res-corpus-title">
+            <span class="res-corpus-dot" style="background:var(--accent2)"></span>
+            Corpus augmenté
+          </div>
+          <div class="res-corpus-row-item"><span>Total</span><strong>3 893 séquences</strong></div>
+          <div class="res-corpus-row-item"><span>Entrainement</span><strong>3 156 séquences</strong></div>
+          <div class="res-corpus-row-item"><span>Test</span><strong>737 séquences</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Courbes loss/accuracy -->
+    <div>
+      <div class="res-section-head" style="margin-bottom:16px">
+        <span class="res-section-title">Courbes d'entrainement</span>
+        <div class="res-section-line"></div>
+      </div>
+      <div class="res-img-grid">
+        <div class="res-img-card">
+          <div class="res-img-wrap" onclick="openLightbox(this.querySelector('img'))">
+            <img src="https://raw.githubusercontent.com/KerenDague/Detection_et_analyse_de_dactylologie_francaise/main/Interface/Images/loss_accuracy_corpus.png"
+                 alt="Courbes loss corpus de base"
+                 class="loading"
+                 onload="this.classList.remove('loading')"
+                 onerror="this.parentNode.innerHTML=placeholderHtml('Courbe loss — corpus de base')"/>
+          </div>
+          <div class="res-img-caption">
+            <div class="res-img-caption-title">Loss & Accuracy — corpus de base</div>
+          </div>
+        </div>
+        <div class="res-img-card">
+          <div class="res-img-wrap" onclick="openLightbox(this.querySelector('img'))">
+            <img src="https://raw.githubusercontent.com/KerenDague/Detection_et_analyse_de_dactylologie_francaise/main/Interface/Images/loss_accuracy_augmente.png"
+                 alt="Courbes loss corpus augmenté"
+                 class="loading"
+                 onload="this.classList.remove('loading')"
+                 onerror="this.parentNode.innerHTML=placeholderHtml('Courbe loss — corpus augmenté')"/>
+          </div>
+          <div class="res-img-caption">
+            <div class="res-img-caption-title">Loss & Accuracy — corpus augmenté</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Matrices de confusion -->
+    <div>
+      <div class="res-section-head" style="margin-bottom:16px">
+        <span class="res-section-title">Matrices de confusion</span>
+        <div class="res-section-line"></div>
+      </div>
+      <div class="res-img-grid">
+        <div class="res-img-card">
+          <div class="res-img-wrap" onclick="openLightbox(this.querySelector('img'))">
+            <img src="https://raw.githubusercontent.com/KerenDague/Detection_et_analyse_de_dactylologie_francaise/main/Interface/Images/confusion_matrix_corpus.png"
+                 alt="Matrice de confusion corpus de base"
+                 class="loading"
+                 onload="this.classList.remove('loading')"
+                 onerror="this.parentNode.innerHTML=placeholderHtml('Matrice de confusion — corpus de base')"/>
+          </div>
+          <div class="res-img-caption">
+            <div class="res-img-caption-title">Matrice de confusion — corpus de base</div>
+          </div>
+        </div>
+        <div class="res-img-card">
+          <div class="res-img-wrap" onclick="openLightbox(this.querySelector('img'))">
+            <img src="https://raw.githubusercontent.com/KerenDague/Detection_et_analyse_de_dactylologie_francaise/main/Interface/Images/confusion_matrix_augmente.png"
+                 alt="Matrice de confusion corpus augmenté"
+                 class="loading"
+                 onload="this.classList.remove('loading')"
+                 onerror="this.parentNode.innerHTML=placeholderHtml('Matrice de confusion — corpus augmenté')"/>
+          </div>
+          <div class="res-img-caption">
+            <div class="res-img-caption-title">Matrice de confusion — corpus augmenté</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KPIs -->
+    <div>
+      <div class="res-section-head" style="margin-bottom:16px">
+        <span class="res-section-title">Performances globales</span>
+        <div class="res-section-line"></div>
+      </div>
+      <div class="res-kpi-grid">
+        <div class="res-kpi corpus-base">
+          <div class="res-kpi-label">Accuracy — Corpus de base</div>
+          <div class="res-kpi-val">55,85</div>
+          <div class="res-kpi-unit">%</div>
+          <span class="res-kpi-tag tag-base">Base</span>
+        </div>
+        <div class="res-kpi corpus-base">
+          <div class="res-kpi-label">Loss — Corpus de base</div>
+          <div class="res-kpi-val">3,01</div>
+          <div class="res-kpi-unit">loss test</div>
+          <span class="res-kpi-tag tag-base">Base</span>
+        </div>
+        <div class="res-kpi corpus-aug">
+          <div class="res-kpi-label">Accuracy — Corpus augmenté</div>
+          <div class="res-kpi-val">60,52</div>
+          <div class="res-kpi-unit">%</div>
+          <span class="res-kpi-tag tag-aug">Augmenté</span>
+        </div>
+        <div class="res-kpi corpus-aug">
+          <div class="res-kpi-label">Loss — Corpus augmenté</div>
+          <div class="res-kpi-val">4,01</div>
+          <div class="res-kpi-unit">loss test</div>
+          <span class="res-kpi-tag tag-aug">Augmenté</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Analyse -->
+    <div>
+      <div class="res-section-head" style="margin-bottom:16px">
+        <span class="res-section-title">Analyse</span>
+        <div class="res-section-line"></div>
+      </div>
+      <div class="res-text-card">
+        <p>L'augmentation de données améliore la performance globale (<strong>+4,67 points d'accuracy</strong>), mais s'accompagne d'un phénomène d'<strong>overfitting marqué</strong> : la loss d'entrainement est descendue en dessous de 0,5, tandis que la loss de test stagne autour de 4, ce qui indique que le modèle a mémorisé les données plutôt que de généraliser.</p>
+        <div class="res-highlight">
+          Ces résultats restent encourageants au regard des contraintes du problème : <strong>26 classes</strong> à distinguer, un corpus de taille modeste, et une diversité réelle limitée due à l'augmentation (mêmes locuteurs, mêmes conditions).
+        </div>
+        <p>Il est notable que les mêmes tendances d'erreurs se retrouvent sur les deux corpus, ce qui indique que l'augmentation de données n'introduit pas de bruit supplémentaire et ne dégrade pas la cohérence des prédictions.</p>
+      </div>
+    </div>
+
+    <!-- Confusions fréquentes -->
+    <div>
+      <div class="res-section-head" style="margin-bottom:16px">
+        <span class="res-section-title">Confusions fréquentes</span>
+        <div class="res-section-line"></div>
+      </div>
+      <div class="res-text-card" style="margin-bottom:16px">
+        <p>L'analyse des matrices révèle que les erreurs ne sont pas aléatoires : elles concernent systématiquement des <strong>paires de lettres visuellement proches</strong>. Ce comportement suggère que les confusions sont liées à la proximité des vecteurs de landmarks extraits par MediaPipe, plutôt qu'à un défaut d'apprentissage général.</p>
+      </div>
+      <div class="res-pairs-grid">
+        <div class="res-pair">
+          <div class="res-pair-letters">U ↔ V</div>
+          <div class="res-pair-desc">Seul l'<strong>écartement</strong> des doigts diffère : index et majeur collés (U) vs écartés (V).</div>
+        </div>
+        <div class="res-pair">
+          <div class="res-pair-letters">A ↔ S</div>
+          <div class="res-pair-desc">Tous deux signés avec un <strong>poing fermé</strong> ; le pouce est sur le côté pour A.</div>
+        </div>
+        <div class="res-pair">
+          <div class="res-pair-letters">R ↔ U</div>
+          <div class="res-pair-desc">Index et majeur pointés vers le haut dans les deux cas : <strong>croisés</strong> (R) vs côte à côte (U).</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Perspectives -->
+    <div>
+      <div class="res-section-head" style="margin-bottom:16px">
+        <span class="res-section-title">Perspectives d'amélioration</span>
+        <div class="res-section-line"></div>
+      </div>
+      <div class="res-persp-list">
+        <div class="res-persp-item">
+          <div class="res-persp-num">01</div>
+          <div class="res-persp-body"><strong>Agrandissement du corpus</strong> — Collecter davantage de vidéos auprès d'un plus grand nombre de participants pour dépasser les limitations actuelles (~120 séquences par lettre).</div>
+        </div>
+        <div class="res-persp-item">
+          <div class="res-persp-num">02</div>
+          <div class="res-persp-body"><strong>Extension du vocabulaire</strong> — Intégrer des configurations supplémentaires : chiffres, nombres, et signes LSF courants comme "bonjour" ou "ça va".</div>
+        </div>
+        <div class="res-persp-item">
+          <div class="res-persp-num">03</div>
+          <div class="res-persp-body"><strong>Données de locuteurs signants</strong> — Entrainer le modèle sur des vidéos réalisées par des personnes sourdes pratiquant couramment la LSF, pour une meilleure qualité d'exécution des signes.</div>
+        </div>
+        <div class="res-persp-item">
+          <div class="res-persp-num">04</div>
+          <div class="res-persp-body"><strong>Diversité des angles de vue</strong> — Inclure différentes orientations de caméra pour améliorer la robustesse du modèle face aux variations de positionnement.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
 </div>
 
 <!-- Démonstration -->
@@ -697,7 +1017,7 @@ main{flex:1;display:flex;flex-direction:column}
         <p class="tip">Placez votre main bien dans le cadre</p>
         <p class="tip">Éclairage homogène, fond neutre de préférence</p>
         <p class="tip">Gardez votre main à 30–50 cm de la caméra</p>
-        <p class="tip">Restez immobile 1–2 secondes pour la prédiction</p>
+        <p class="tip">Restez immobile 5 secondes pour la prédiction</p>
       </div>
       <div class="card">
         <div class="card-title">Session</div>
@@ -730,10 +1050,6 @@ main{flex:1;display:flex;flex-direction:column}
           <div class="top3-row"><span class="top3-letter">–</span><div class="top3-bar-wrap"><div class="top3-bar" style="width:0%"></div></div><span class="top3-pct">–</span></div>
         </div>
         <div id="proc-time"></div>
-      </div>
-      <div class="card">
-        <div class="card-title">Description du signe prédit</div>
-        <div id="letter-desc" style="font-size:13px;color:var(--muted);line-height:1.65">–</div>
       </div>
     </div>
 
@@ -799,7 +1115,6 @@ setInterval(checkApi, 15000);
 /* Navigation */
 const loaded = {};
 const MD_URLS = {
-  resultats:     'https://raw.githubusercontent.com/KerenDague/Detection_et_analyse_de_dactylologie_francaise/main/Interface/MD/resultats.md',
   documentation: 'https://raw.githubusercontent.com/KerenDague/Detection_et_analyse_de_dactylologie_francaise/main/Interface/MD/documentation.md',
 };
 
