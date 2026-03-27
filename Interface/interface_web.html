@@ -746,10 +746,10 @@ main{flex:1;display:flex;flex-direction:column}
           <span class="diff-badge resolved">Résolu</span>
         </div>
         <div class="diff-body">
-          Une fois les landmarks extraits, l'étape suivante consistait à analyser la longueur des séquences. En <strong>calculant les statistiques</strong> sur l'ensemble des séquences, nous avons repéré <strong>deux types</strong> de cas problématiques : Nous avions des séquences de longueur 0 mes aussi des séquences anormalement longues.
+          Une fois les landmarks extraits, l'étape suivante consistait à analyser la longueur des séquences. En <strong>calculant les statistiques</strong> sur l'ensemble des séquences, nous avons repéré <strong>deux types</strong> de cas problématiques : Nous avions des séquences de longueur 0 mais aussi des séquences anormalement longues.
           <div class="diff-solution">
             <div class="diff-solution-label">Solution</div>
-            Mise en place d’un <strong>filtrage automatique</strong> des séquences aberrantes via une analyse statistique (méthode IQR) pour détecter les vidéos trop longues ou trop courtes, suivie d’une normalisation : les <strong>séquences excédant 110 frames sont tronquées en supprimant les frames les plus éloignées du vecteur médian</strong> (pour conserver la pertinence temporelle), tandis que les <strong>séquences trop courtes sont complétées par padding</strong>.
+            Mise en place d’un <strong>filtrage automatique</strong> des séquences aberrantes via une analyse statistique (méthode IQR) pour détecter les vidéos trop longues ou trop courtes, suivie d’une normalisation : les <strong>séquences excédant 110 frames sont tronquées en supprimant les frames les plus éloignées du vecteur médian</strong> calculé sur une vidéo de référence (pour conserver la pertinence des positionnements de la main pour chaque signe), tandis que les <strong>séquences trop courtes sont complétées par padding</strong>.
           </div>
         </div>
       </div>
