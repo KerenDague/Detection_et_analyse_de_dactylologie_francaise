@@ -13,7 +13,6 @@ Création d'un réseau de neurones qui prend les fichiers npy en entrée.
 Les fichiers npy sont constitués de "groupes" de 21 points (1 groupe par image) qui ont chacun 3 coordonnées (d'où le `input_size = 63`)
 """
 
-MAX_FRAMES  = 80 
 INPUT_SIZE  = 63
 HIDDEN_SIZE = 256
 NUM_CLASSES = 26
@@ -63,7 +62,7 @@ def get_original_stem(filename):
     return stem
 
 
-def load_data(base_path, letters, test_ratio=0.2, max_frames=MAX_FRAMES, input_size=INPUT_SIZE):
+def load_data(base_path, letters, test_ratio=0.2, input_size=INPUT_SIZE):
     """
     Charge les données depuis corpus_pretraite_padded/lettre/fichier.npy.
     
@@ -97,20 +96,11 @@ def load_data(base_path, letters, test_ratio=0.2, max_frames=MAX_FRAMES, input_s
             path = os.path.join(letter_path, f)
             seq  = np.load(path, allow_pickle=True)
 
-            # Ignorer les séquences invalides (déjà filtrées dans reg_seq.py, sécurité en plus)
+            # Ignorer les séquences invalides (déjà filtrées dans longueur_séquence.py en théorie mais sait on jamais)
             if seq.ndim != 2 or seq.shape[1] != input_size or seq.shape[0] == 0:
                 skipped += 1
                 continue
 
-            # Les séquences sont déjà paddées/tronquées à MAX_FRAMES par reg_seq.py
-            # On re-vérifie quand même la shape pour être sûr
-            if seq.shape[0] != max_frames:
-                # tronquer ou padder si nécessaire
-                if seq.shape[0] > max_frames:
-                    seq = seq[:max_frames]
-                else:
-                    pad = np.zeros((max_frames - seq.shape[0], input_size), dtype=np.float32)
-                    seq = np.vstack([seq, pad])
 
             seq = seq.astype(np.float32)
 
@@ -133,7 +123,7 @@ def load_data(base_path, letters, test_ratio=0.2, max_frames=MAX_FRAMES, input_s
 
 # Entrainement
 
-def train_model(model, train_loader, criterion, optimizer, scheduler, num_epochs=50):
+def train_model(model, train_loader, criterion, optimizer, scheduler, num_epochs=100):
     train_losses, train_accuracies = [], []
     best_loss = float('inf')
 
@@ -169,7 +159,7 @@ def train_model(model, train_loader, criterion, optimizer, scheduler, num_epochs
             best_loss = epoch_loss
             torch.save(model.state_dict(), 'best_model.pt')
 
-    print(f"\nMeilleur modèle sauvegardé (loss: {best_loss:.4f}) → best_model.pt")
+    print(f"\nMeilleur modèle sauvegardé (loss: {best_loss:.4f}) dans best_model.pt")
     return train_losses, train_accuracies
 
 
@@ -243,7 +233,7 @@ optimizer = optim.Adam(model.parameters(), lr=0.001)
 scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', patience=5, factor=0.5)
 
 # Entrainement
-num_epochs = 50
+num_epochs = 100
 train_losses, train_accuracies = train_model(model, train_loader, criterion, optimizer, scheduler, num_epochs)
 
 # Chargement du meilleur modèle
@@ -259,9 +249,8 @@ torch.save({
     'X_mean':  X_mean,
     'X_std':   X_std,
     'letters': letters,
-    'max_frames': MAX_FRAMES,
 }, 'lsf_model.pt')
-print("Modèle complet sauvegardé → lsf_model.pt")
+print("Modèle complet sauvegardé dans corpus_model.pt")
 
 # Matrice de confusion
 plot_confusion_matrix(y_true, y_pred, letters)
